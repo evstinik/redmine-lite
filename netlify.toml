@@ -15,6 +15,12 @@
   command = "yarn build"
 
 [[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/*"
   to = "https://redmine.sabo-gmbh.de/:splat"
   status = 200
