@@ -26,7 +26,7 @@ export class RedmineService {
     endpoint: string, 
     { queryParams = {}, apiKey = '' }: { queryParams?: {[name: string]: string}, apiKey?: string } = {}
   ): Promise<T> {
-    const url = new URL(`${endpoint}.json`, window.location as any)
+    const url = new URL(`/api${endpoint}.json`, window.location as any)
     Object.keys(queryParams)
       .forEach((name) => url.searchParams.append(name, queryParams[name]))
     return fetch(
