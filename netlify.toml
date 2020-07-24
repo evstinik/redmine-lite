@@ -12,10 +12,10 @@
   publish = "build/"
 
   # Default build command.
-  command = "sed -i s/REDMINE_URL/${REDMINE_URL}/g netlify.toml && yarn build"
+  command = "sed -i s/REDMINE_URL_PLACEHOLDER/${REDMINE_URL}/g netlify.toml && yarn build"
 
 [[redirects]]
   from = "/api/*"
-  to = "REDMINE_URL/:splat"
+  to = "REDMINE_URL_PLACEHOLDER/:splat"
   status = 200
   force = true
