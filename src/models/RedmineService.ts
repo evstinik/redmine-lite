@@ -1,7 +1,15 @@
 import { User, UsersResponse } from "./UsersResponse"
-import { TimeEntry, TimeEntriesResponse } from "./TimeEntriesResponse"
+import { TimeEntry, TimeEntriesResponse, CreateTimeEntryResponse } from "./TimeEntriesResponse"
+import { CreateTimeEntry } from "./TimeEntryRequest"
 
 const API_URL = process.env.REACT_APP_API_URL ?? ''
+
+interface RequestParams {
+  queryParams?: {[name: string]: string}
+  apiKey?: string
+  method?: string
+  body?: any // any json convertable
+}
 
 export class RedmineService {
   public async login(apiKey: string): Promise<User> {
@@ -19,6 +27,23 @@ export class RedmineService {
     return time_entries
   }
 
+  public async addTimeEntry(timeEntry: CreateTimeEntry, apiKey: string): Promise<TimeEntry> {
+    const { time_entry } = await this.request<CreateTimeEntryResponse>(
+      '/time_entries',
+      { apiKey, method: 'POST', body: {
+        time_entry: timeEntry
+      } }
+    )
+    return time_entry
+  }
+
+  public async deleteTimeEntry(id: number, apiKey: string): Promise<void> {
+    return await this.request<void>(
+      `/time_entries/${id}`,
+      { apiKey, method: 'DELETE' }
+    )
+  }
+
   public async getUser(userId: string = 'current', apiKey: string): Promise<User> {
     const { user } = await this.request<UsersResponse>(`/users/${userId}`, { apiKey })
     return user
@@ -26,17 +51,23 @@ export class RedmineService {
 
   private async request<T>(
     endpoint: string, 
-    { queryParams = {}, apiKey = '' }: { queryParams?: {[name: string]: string}, apiKey?: string } = {}
+    { queryParams = {}, apiKey = '', method = 'GET', body }: RequestParams = {}
   ): Promise<T> {
     const url = new URL(`${API_URL}${endpoint}.json`, window.location as any);
     Object.keys(queryParams)
       .forEach((name) => url.searchParams.append(name, queryParams[name]))
+    let headers: {[name: string]: string} = {
+        "X-Redmine-API-Key": apiKey
+    }
+    if (body && method !== 'GET') {
+      headers['Content-Type'] = 'application/json'
+    }
     return fetch(
       url.toString(), 
       {
-        headers: {
-          "X-Redmine-API-Key": apiKey,
-        },
+        method,
+        body: body && JSON.stringify(body),
+        headers,
       }
     ).then(r => r.json())
   }

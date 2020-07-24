@@ -1,15 +1,14 @@
 import * as React from 'react'
 import { useRedmineService } from '../hooks/redmineService'
 import { useAppState } from '../hooks/appState'
+import { useOnChange } from '../hooks/utils'
 
 export function Login() {
   const [apiKey, setApiKey] = React.useState('')
   const redmineService = useRedmineService()
   const [appState, setAppState] = useAppState()
 
-  const handleInputChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setApiKey(event.target.value)
-  }, [setApiKey])
+  const handleInputChange =  useOnChange(setApiKey)
 
   const login = React.useCallback(async (event) => {
     event.preventDefault()

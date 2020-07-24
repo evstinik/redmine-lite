@@ -36,3 +36,7 @@ export interface TimeEntriesResponse {
   offset: number;
   limit: number;
 }
+
+export interface CreateTimeEntryResponse {
+  time_entry: TimeEntry
+}
