@@ -1,6 +1,8 @@
 import { User, UsersResponse } from "./UsersResponse"
 import { TimeEntry, TimeEntriesResponse } from "./TimeEntriesResponse"
 
+const API_URL = process.env.REACT_APP_API_URL ?? ''
+
 export class RedmineService {
   public async login(apiKey: string): Promise<User> {
     const { user } = await this.request<UsersResponse>('/users/current', { apiKey })
@@ -26,7 +28,7 @@ export class RedmineService {
     endpoint: string, 
     { queryParams = {}, apiKey = '' }: { queryParams?: {[name: string]: string}, apiKey?: string } = {}
   ): Promise<T> {
-    const url = new URL(`/api${endpoint}.json`, window.location as any)
+    const url = new URL(`${API_URL}${endpoint}.json`, window.location as any);
     Object.keys(queryParams)
       .forEach((name) => url.searchParams.append(name, queryParams[name]))
     return fetch(

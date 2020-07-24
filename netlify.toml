@@ -15,7 +15,7 @@
   command = "yarn build"
 
 [[redirects]]
-  from = "/api/*"
-  to = "https://redmine.sabo-gmbh.de/:splat"
+  from = "REACT_APP_API_URL/*"
+  to = "REDMINE_URL/:splat"
   status = 200
   force = true
