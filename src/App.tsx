@@ -7,22 +7,38 @@ import { TimeEntries } from './TimeEntries/TimeEntries';
 import { RedmineServiceContext } from './hooks/redmineService';
 import { RedmineService } from './models/RedmineService';
 import { useTimeEntryActivitiesFetcher } from './hooks/timeEntries';
+import { useLogout } from './hooks/user';
+import { useApiKey } from './hooks/apiKey';
+
+function AppWithContexts() {
+  const apiKey = useApiKey()
+
+  useAppStateAutosaver()
+  useTimeEntryActivitiesFetcher()
+
+  return (
+    <>
+      {!apiKey && <Login />}
+      {apiKey && <TimeEntries />}
+    </>
+  );
+}
 
 function App() {
   const appStateGetSet = React.useState(AppState.load())
-  const redmineService = React.useMemo(() => new RedmineService(), [])
-  
-  const [appState] = appStateGetSet
-  const apiKey = appState.apiKey
 
-  useAppStateAutosaver(appState)
-  useTimeEntryActivitiesFetcher()
+  const logout = useLogout(appStateGetSet)
+
+  const redmineService = React.useMemo(() => {
+    const service = new RedmineService()
+    service.onUnauthorized = logout
+    return service
+  }, [logout])
   
   return (
     <AppStateContext.Provider value={appStateGetSet}>
       <RedmineServiceContext.Provider value={redmineService}>
-        {!apiKey && <Login />}
-        {apiKey && <TimeEntries />}
+        <AppWithContexts />
       </RedmineServiceContext.Provider>
     </AppStateContext.Provider>
   );

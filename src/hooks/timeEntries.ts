@@ -1,5 +1,5 @@
 import { useAppState } from "./appState";
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useMemo } from "react";
 import { useRedmineService } from "./redmineService";
 import { CreateTimeEntry } from "../models/TimeEntryRequest";
 import { TimeEntryActivity } from "../models/TimeEntryActivity";
@@ -19,6 +19,7 @@ export function useTimeEntries() {
             })
           }
         })
+        .catch()
     }
     return () => { isLatest = false }
   }, [appState, setAppState, redmineService])
@@ -53,7 +54,7 @@ export function useTimeEntryActivitiesFetcher() {
           .then((activities) => {
             setAppState({
               ...appState,
-              activities,
+              activities
             });
           })
       }
@@ -64,7 +65,7 @@ export function useTimeEntryActivitiesFetcher() {
 
 export function useTimeEntryActivities() {
   const [appState] = useAppState()
-  return appState.activities ?? TimeEntryActivity.default
+  return useMemo(() => appState.activities ?? TimeEntryActivity.default, [appState.activities])
 }
 
 export function usePrimaryTimeEntryActivity() {

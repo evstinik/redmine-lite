@@ -13,6 +13,9 @@ interface RequestParams {
 }
 
 export class RedmineService {
+
+  public onUnauthorized?: () => void
+
   public async login(apiKey: string): Promise<User> {
     const { user } = await this.request<UsersResponse>('/users/current', { apiKey })
     return user
@@ -71,13 +74,18 @@ export class RedmineService {
     if (body && method !== 'GET') {
       headers['Content-Type'] = 'application/json'
     }
-    return fetch(
-      url.toString(), 
-      {
-        method,
-        body: body && JSON.stringify(body),
-        headers,
-      }
-    ).then(r => r.json())
+    return fetch(url.toString(), {
+      method,
+      body: body && JSON.stringify(body),
+      headers,
+    })
+      .then(r => {
+        if (r.status === 401) {
+          this.onUnauthorized?.()
+          throw new Error('Unauthorized')
+        }
+        return r
+      })
+      .then((r) => r.json());
   }
 }

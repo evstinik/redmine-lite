@@ -7,7 +7,8 @@ export function useAppState() {
   return useContext(AppStateContext)
 }
 
-export function useAppStateAutosaver(appState: AppState) {
+export function useAppStateAutosaver() {
+  const [appState] = useAppState()
   useEffect(() => {
     window.onunload = () => {
       AppState.store(appState)

@@ -1,6 +1,7 @@
 import { useAppState } from "./appState";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useRedmineService } from "./redmineService";
+import { AppState } from "../models/AppState";
 
 export function useUser() {
   const [appState, setAppState] = useAppState()
@@ -21,4 +22,16 @@ export function useUser() {
     return () => { isLatest = false }
   }, [appState, setAppState, redmineService])
   return appState.user
+}
+
+export function useLogout([appState, setAppState]: [AppState, (s: AppState) => void]) {
+  return useCallback(() => {
+    setAppState({
+      ...appState,
+      apiKey: undefined,
+      activities: undefined,
+      primaryActivityId: undefined,
+      user: undefined
+    });
+  }, [appState, setAppState]);
 }
