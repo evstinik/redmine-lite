@@ -12,6 +12,12 @@ interface RequestParams {
   body?: any // any json convertable
 }
 
+export class UnprocessableEntityError extends Error {
+  constructor(public readonly errors: [string]) {
+    super('Unprocessable entity')
+  }
+}
+
 export class RedmineService {
 
   public onUnauthorized?: () => void
@@ -83,6 +89,12 @@ export class RedmineService {
         if (r.status === 401) {
           this.onUnauthorized?.()
           throw new Error('Unauthorized')
+        } else if (r.status === 422) {
+          return r.json().then(errorResponse => {
+            throw new UnprocessableEntityError(errorResponse.errors ?? [])
+          })
+        } else if (!r.ok) {
+          throw new Error(`${r.status} ${r.statusText}`)
         }
         return r
       })
