@@ -1,6 +1,7 @@
 import { User, UsersResponse } from "./UsersResponse"
 import { TimeEntry, TimeEntriesResponse, CreateTimeEntryResponse } from "./TimeEntriesResponse"
 import { CreateTimeEntry } from "./TimeEntryRequest"
+import { TimeEntryActivity, TimeEntryActivityResponse } from "./TimeEntryActivity"
 
 const API_URL = process.env.REACT_APP_API_URL ?? ''
 
@@ -42,6 +43,14 @@ export class RedmineService {
       `/time_entries/${id}`,
       { apiKey, method: 'DELETE' }
     )
+  }
+
+  public async getTimeEntryActivities(apiKey: string): Promise<TimeEntryActivity[]> {
+    const { time_entry_activities } = await this.request<TimeEntryActivityResponse>(
+      "/enumerations/time_entry_activities",
+      { apiKey }
+    );
+    return time_entry_activities
   }
 
   public async getUser(userId: string = 'current', apiKey: string): Promise<User> {

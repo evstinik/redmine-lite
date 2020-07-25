@@ -1,10 +1,13 @@
 import { User } from "./UsersResponse"
 import { TimeEntry } from "./TimeEntriesResponse"
+import { TimeEntryActivity } from "./TimeEntryActivity"
 
 export interface AppState {
   timeEntries?: TimeEntry[]
   apiKey?: string
   user?: User
+  activities?: TimeEntryActivity[]
+  primaryActivityId?: number
 }
 
 export abstract class AppState {
@@ -14,10 +17,17 @@ export abstract class AppState {
 
   static load(): AppState {
     const stateAsStr = localStorage.getItem('RedmineLite')
-    return stateAsStr ? JSON.parse(stateAsStr) : {}
+    const loadedState = stateAsStr ? JSON.parse(stateAsStr) : {}
+    return {
+      ...AppState.empty(),
+      ...loadedState
+    }
   }
 
-  static store({ apiKey }: AppState) {
-    localStorage.setItem('RedmineLite', JSON.stringify({ apiKey }))
+  static store({ apiKey, primaryActivityId, activities }: AppState) {
+    localStorage.setItem(
+      "RedmineLite",
+      JSON.stringify({ apiKey, primaryActivityId, activities })
+    );
   }
 }

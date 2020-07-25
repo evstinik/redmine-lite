@@ -6,6 +6,7 @@ import { Login } from './Login/Login';
 import { TimeEntries } from './TimeEntries/TimeEntries';
 import { RedmineServiceContext } from './hooks/redmineService';
 import { RedmineService } from './models/RedmineService';
+import { useTimeEntryActivitiesFetcher } from './hooks/timeEntries';
 
 function App() {
   const appStateGetSet = React.useState(AppState.load())
@@ -15,6 +16,7 @@ function App() {
   const apiKey = appState.apiKey
 
   useAppStateAutosaver(appState)
+  useTimeEntryActivitiesFetcher()
   
   return (
     <AppStateContext.Provider value={appStateGetSet}>

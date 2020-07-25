@@ -2,6 +2,7 @@ import { useAppState } from "./appState";
 import { useEffect, useCallback } from "react";
 import { useRedmineService } from "./redmineService";
 import { CreateTimeEntry } from "../models/TimeEntryRequest";
+import { TimeEntryActivity } from "../models/TimeEntryActivity";
 
 export function useTimeEntries() {
   const [appState, setAppState] = useAppState()
@@ -39,4 +40,34 @@ export function useAddTimeEntry() {
         })
       })
   }, [redmineService, setAppState, appState])
+}
+
+export function useTimeEntryActivitiesFetcher() {
+  const redmineService = useRedmineService()
+  const [appState, setAppState] = useAppState();
+  return useEffect(
+    () => {
+      if (appState.apiKey && !appState.activities) {
+        redmineService
+          .getTimeEntryActivities(appState.apiKey!)
+          .then((activities) => {
+            setAppState({
+              ...appState,
+              activities,
+            });
+          })
+      }
+    },
+    [redmineService, setAppState, appState, appState.apiKey, appState.activities]
+  );
+}
+
+export function useTimeEntryActivities() {
+  const [appState] = useAppState()
+  return appState.activities ?? TimeEntryActivity.default
+}
+
+export function usePrimaryTimeEntryActivity() {
+  const [appState] = useAppState();
+  return appState.primaryActivityId ?? TimeEntryActivity.defaultPrimaryActivityId;
 }

@@ -1,15 +1,18 @@
 import * as React from 'react'
 import { useOnChange } from '../hooks/utils'
-import { useAddTimeEntry } from '../hooks/timeEntries'
+import { useAddTimeEntry, useTimeEntryActivities, usePrimaryTimeEntryActivity } from '../hooks/timeEntries'
 
 export function TimeEntryForm() {
+  const activities = useTimeEntryActivities()
+  const primaryActivityId = usePrimaryTimeEntryActivity()
+
   const [issue, setIssue] = React.useState('')
   const [spent, setSpent] = React.useState('')
-  const [activity, setActivity] = React.useState("9")
+  const [activity, setActivity] = React.useState(primaryActivityId)
   const [comment, setComment] = React.useState('')
 
   const addTimeEntry = useAddTimeEntry()
-  
+
   const reset = React.useCallback(() => {
     setIssue('')
     setSpent('')
@@ -45,23 +48,9 @@ export function TimeEntryForm() {
       />
       <label>Activity</label>
       <select value={activity} onChange={useOnChange(setActivity)} required>
-        <option value="10">Analysis/Specification</option>
-        <option value="62">Call/Meeting</option>
-        <option value="53">Controlling</option>
-        <option value="15">Deployment</option>
-        <option value="8">Design</option>
-        <option value="9">Development</option>
-        <option value="14">Documentation/Revision</option>
-        <option value="16">Hiring/HR_Management</option>
-        <option value="13">Maintenance</option>
-        <option value="11">Management</option>
-        <option value="52">Marketing</option>
-        <option value="49">Other</option>
-        <option value="47">Sales</option>
-        <option value="58">Self study</option>
-        <option value="35">Support</option>
-        <option value="12">Testing</option>
-        <option value="57">Travel</option>
+        {activities.map((activity) => (
+          <option key={activity.id} value={activity.id}>{activity.name}</option>
+        ))}
       </select>
       <label>Comment</label>
       <input type="text" value={comment} onChange={useOnChange(setComment)} />
