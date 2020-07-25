@@ -1,10 +1,10 @@
 import { useAppState } from "./appState";
 import { useMemo } from "react";
 
-export function useApiKey() {
-  const [appState, setAppState] = useAppState()
+export function useApiKey(): string | undefined {
+  const [appState] = useAppState()
   return useMemo(
-    () => [appState.apiKey, (apiKey?: string) => setAppState({ ...appState, apiKey })], 
-    [appState, setAppState]
+    () => appState.apiKey, 
+    [appState]
   )
 }

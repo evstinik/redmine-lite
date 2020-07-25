@@ -7,6 +7,7 @@ export function TimeEntryForm() {
   const activities = useTimeEntryActivities()
   const primaryActivityId = usePrimaryTimeEntryActivity()
 
+  const [isCreating, setIsCreating] = React.useState(false)
   const [issue, setIssue] = React.useState('')
   const [spent, setSpent] = React.useState('')
   const [activity, setActivity] = React.useState(primaryActivityId)
@@ -24,6 +25,7 @@ export function TimeEntryForm() {
 
   const submit = React.useCallback((event) => {
     event.preventDefault() 
+    setIsCreating(true)
     addTimeEntry({
       activity_id: Number(activity),
       comments: comment,
@@ -38,36 +40,58 @@ export function TimeEntryForm() {
         setErrors([error.toString()])
       }
     })
-  }, [addTimeEntry, activity, comment, spent, issue, reset])
+    .then(() => {
+      setIsCreating(false)
+    })
+  }, [addTimeEntry, activity, comment, spent, issue, reset, setIsCreating])
 
   return (
     <div>
       <form onSubmit={submit}>
-        <label>Issue #</label>
-        <input
-          type="text"
-          value={issue}
-          onChange={useOnChange(setIssue)}
-          required
-        />
-        <label>Spent</label>
-        <input
-          type="text"
-          value={spent}
-          onChange={useOnChange(setSpent)}
-          required
-        />
-        <label>Activity</label>
-        <select value={activity} onChange={useOnChange(setActivity)} required>
-          {activities.map((activity) => (
-            <option key={activity.id} value={activity.id}>
-              {activity.name}
-            </option>
-          ))}
-        </select>
-        <label>Comment</label>
-        <input type="text" value={comment} onChange={useOnChange(setComment)} />
-        <input type="submit" value="Add" />
+        <fieldset disabled={isCreating}>
+          <label>
+            Issue #
+            <input
+              id="time-entry-form-spent"
+              type="text"
+              value={issue}
+              onChange={useOnChange(setIssue)}
+              required
+            />
+          </label>
+          <label>
+            Spent
+            <input
+              type="text"
+              value={spent}
+              onChange={useOnChange(setSpent)}
+              required
+            />
+          </label>
+          <label>
+            Activity
+            <select
+              value={activity}
+              onChange={useOnChange(setActivity)}
+              required
+            >
+              {activities.map((activity) => (
+                <option key={activity.id} value={activity.id}>
+                  {activity.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Comment
+            <input
+              type="text"
+              value={comment}
+              onChange={useOnChange(setComment)}
+            />
+          </label>
+          <input type="submit" value="Add" />
+        </fieldset>
       </form>
       <ul>
         {errors.map((error, idx) => (

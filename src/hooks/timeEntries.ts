@@ -43,6 +43,26 @@ export function useAddTimeEntry() {
   }, [redmineService, setAppState, appState])
 }
 
+export function useDeleteTimeEntry() {
+  const redmineService = useRedmineService();
+  const [appState, setAppState] = useAppState();
+  return useCallback(
+    async (timeEntryId: number) => {
+      return redmineService
+        .deleteTimeEntry(timeEntryId, appState.apiKey!)
+        .then(() => {
+          const timeEntries = appState.timeEntries &&
+              appState.timeEntries.filter(({ id }) => timeEntryId !== id)
+          setAppState({
+            ...appState,
+            timeEntries
+          });
+        });
+    },
+    [redmineService, setAppState, appState]
+  );
+}
+
 export function useTimeEntryActivitiesFetcher() {
   const redmineService = useRedmineService()
   const [appState, setAppState] = useAppState();
@@ -69,6 +89,12 @@ export function useTimeEntryActivities() {
 }
 
 export function usePrimaryTimeEntryActivity() {
-  const [appState] = useAppState();
-  return appState.primaryActivityId ?? TimeEntryActivity.defaultPrimaryActivityId;
+  const [{ primaryActivityId, activities }] = useAppState();
+  if (primaryActivityId) {
+    return primaryActivityId
+  }
+  if (activities && activities.length > 0) {
+    return activities[0].id
+  }
+  return undefined
 }

@@ -26,8 +26,8 @@ export interface TimeEntry {
   hours: number;
   comments: string;
   spent_on: string;
-  created_on: Date;
-  updated_on: Date;
+  created_on: string;
+  updated_on: string;
 }
 
 export interface TimeEntriesResponse {

@@ -10,6 +10,7 @@ interface RequestParams {
   apiKey?: string
   method?: string
   body?: any // any json convertable
+  emptyResponse?: boolean
 }
 
 export class UnprocessableEntityError extends Error {
@@ -50,7 +51,7 @@ export class RedmineService {
   public async deleteTimeEntry(id: number, apiKey: string): Promise<void> {
     return await this.request<void>(
       `/time_entries/${id}`,
-      { apiKey, method: 'DELETE' }
+      { apiKey, method: 'DELETE', emptyResponse: true }
     )
   }
 
@@ -69,7 +70,11 @@ export class RedmineService {
 
   private async request<T>(
     endpoint: string, 
-    { queryParams = {}, apiKey = '', method = 'GET', body }: RequestParams = {}
+    { 
+      queryParams = {}, apiKey = '', 
+      method = 'GET', body,
+      emptyResponse = false
+    }: RequestParams = {}
   ): Promise<T> {
     const url = new URL(`${API_URL}${endpoint}.json`, window.location as any);
     Object.keys(queryParams)
@@ -83,7 +88,7 @@ export class RedmineService {
     return fetch(url.toString(), {
       method,
       body: body && JSON.stringify(body),
-      headers,
+      headers
     })
       .then(r => {
         if (r.status === 401) {
@@ -98,6 +103,11 @@ export class RedmineService {
         }
         return r
       })
-      .then((r) => r.json());
+      .then((r) => {
+        if (emptyResponse) {
+          return
+        }
+        return r.json()
+      });
   }
 }
