@@ -13,25 +13,21 @@ export function IssuesSearch(props: IssuesProps) {
   const { onSelect } = props;
 
   const [query, setQuery] = React.useState('')
-  const [projectId, setProjectId] = React.useState<number | undefined>()
-  
-  const [searchParams, setSearchParams] = React.useState({
-    query: "",
-    projectId,
-  });
+  const [projectId, setProjectId] = React.useState<number>(0)
+
+  const [latestQuery, setLatestQuery] = React.useState(query);
+  const [latestProjectId, setLatestProjectId] = React.useState<number>(projectId);
 
   const projects = useProjects() ?? [];
-  const [issues, isLoading] = useIssuesSearch(searchParams);
+  const [issues, isLoading] = useIssuesSearch(latestQuery, latestProjectId);
 
   const search = React.useCallback(
     (event) => {
       event.preventDefault();
-      setSearchParams({
-        query,
-        projectId,
-      });
+      setLatestQuery(query)
+      setLatestProjectId(projectId)
     },
-    [setSearchParams, query, projectId]
+    [projectId, query]
   );
 
   return (

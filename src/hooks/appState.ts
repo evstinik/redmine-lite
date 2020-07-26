@@ -1,7 +1,7 @@
-import { createContext, useContext, useEffect } from 'react'
+import { createContext, useContext, useEffect, SetStateAction } from 'react'
 import { AppState } from '../models/AppState'
 
-export const AppStateContext = createContext<[AppState, (state: AppState) => void]>([AppState.load(), () => {}])
+export const AppStateContext = createContext<[AppState, React.Dispatch<SetStateAction<AppState>>]>([AppState.load(), (s) => s])
 
 export function useAppState() {
   return useContext(AppStateContext)

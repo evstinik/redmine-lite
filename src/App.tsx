@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { SetStateAction } from 'react';
 import './App.css';
 import { AppState } from './models/AppState';
 import { AppStateContext, useAppStateAutosaver } from './hooks/appState';
@@ -25,15 +25,18 @@ function AppWithContexts() {
 }
 
 function App() {
-  const appStateGetSet = React.useState(AppState.load())
+  const appStateGetSet = React.useState(AppState.load()) as [
+    AppState,
+    React.Dispatch<SetStateAction<AppState>>
+  ];
 
-  const logout = useLogout(appStateGetSet)
+  const logout = useLogout(appStateGetSet[1])
 
-  const redmineService = React.useMemo(() => {
-    const service = new RedmineService()
-    service.onUnauthorized = logout
-    return service
-  }, [logout])
+  const redmineService = React.useMemo(() => new RedmineService(), [])
+
+  React.useEffect(() => {
+    redmineService.onUnauthorized = logout
+  }, [logout, redmineService.onUnauthorized])
   
   return (
     <AppStateContext.Provider value={appStateGetSet}>

@@ -2,9 +2,8 @@ import { useState, useEffect } from "react";
 import { Issue } from "../models/IssuesPaginatedList";
 import { useRedmineService } from "./redmineService";
 import { useApiKey } from "./apiKey";
-import { IssuesSearchParams } from "../models/RedmineService";
 
-export function useIssuesSearch(params: IssuesSearchParams): [Issue[], boolean] {
+export function useIssuesSearch(query: string, projectId: number): [Issue[], boolean] {
   const [issues, setIssues] = useState<Issue[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const apiKey = useApiKey()
@@ -12,14 +11,14 @@ export function useIssuesSearch(params: IssuesSearchParams): [Issue[], boolean] 
 
   useEffect(() => {
     let isCancelled = false;
-    const _params = params
+    const _params = { query, projectId }
 
     setIsLoading(true)
 
     redmineService
-      .getIssues(0, 20, params, apiKey!)
+      .getIssues(0, 20, _params, apiKey!)
       .then(({ issues }) => {
-        if (!isCancelled && _params === params) {
+        if (!isCancelled && _params.projectId === projectId && _params.query === query) {
           setIssues(issues);
         }
       })
@@ -27,9 +26,10 @@ export function useIssuesSearch(params: IssuesSearchParams): [Issue[], boolean] 
       .then(() => setIsLoading(false))
 
     return () => {
+      console.log('Cancelled', query, projectId, _params)
       isCancelled = true;
     };
-  }, [params, redmineService, apiKey, setIssues]);
+  }, [apiKey, projectId, query, redmineService]);
 
   return [issues, isLoading]
 }

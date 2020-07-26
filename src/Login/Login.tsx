@@ -6,7 +6,7 @@ import { useOnChange } from '../hooks/utils'
 export function Login() {
   const [apiKey, setApiKey] = React.useState('')
   const redmineService = useRedmineService()
-  const [appState, setAppState] = useAppState()
+  const [, setAppState] = useAppState()
 
   const handleInputChange =  useOnChange(setApiKey)
 
@@ -14,16 +14,16 @@ export function Login() {
     event.preventDefault()
     try {
       const user = await redmineService.login(apiKey)
-      setAppState({
+      setAppState(appState => ({
         ...appState,
         user,
         apiKey
-      })
+      }))
     } catch (err) {
       console.error(err)
       alert('Seems like API key is not working')
     }
-  }, [redmineService, apiKey, setAppState, appState])
+  }, [redmineService, apiKey, setAppState])
 
   return (
     <div>
