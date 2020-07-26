@@ -59,6 +59,7 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
 
   return (
     <div>
+      <h2>Add new time entry</h2>
       <form onSubmit={submit}>
         <fieldset disabled={isCreating}>
           <label>

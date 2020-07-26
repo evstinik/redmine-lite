@@ -6,6 +6,7 @@ import { TimeEntryForm } from "./TimeEntryForm";
 import { TimeEntry } from "../models/TimeEntriesResponse";
 import { IssuesSearch } from "../Issues/IssuesSearch";
 import { Issue } from "../models/IssuesPaginatedList";
+import { UserPreferences } from "../User/UserPreferences";
 
 function sortByDateAsc(te1: TimeEntry, te2: TimeEntry) {
   return (
@@ -24,24 +25,32 @@ export function TimeEntries() {
 
   const [selectedIssue, setSelectedIssue] = React.useState<Issue>()
 
+  const [isPreferencesVisible, setIsPreferencesVisible] = React.useState(false)
+  const toggleUserPreferences = React.useCallback(() => {
+    setIsPreferencesVisible(isVisible => !isVisible)
+  }, [setIsPreferencesVisible])
+
   return (
     <div>
-      <h1>Hi, {user?.firstname ?? "..."}!</h1>
+      <h1 onClick={toggleUserPreferences}>Hi, {user?.firstname ?? "..."}!</h1>
+      {isPreferencesVisible && <UserPreferences />}
+      <h2>Here's your time entries for today</h2>
       {!sortedTimeEntries && (
-        <h2>I'm loading your time entries for today...</h2>
+        <p>Loading...</p>
       )}
       {sortedTimeEntries && (
         <>
-          <h2>Here's your time entries for today</h2>
-          <ul>
-            {sortedTimeEntries.map((timeEntry) => (
-              <TimeEntryRow key={timeEntry.id} timeEntry={timeEntry} />
-            ))}
-          </ul>
-          <h2>Add new time entry</h2>
-          <TimeEntryForm preselectedIssueId={selectedIssue?.id} />
+          {sortedTimeEntries.length > 0 && (
+            <ul>
+              {sortedTimeEntries.map((timeEntry) => (
+                <TimeEntryRow key={timeEntry.id} timeEntry={timeEntry} />
+              ))}
+            </ul>
+          )}
+          {sortedTimeEntries.length === 0 && <p>No time entries for today</p>}
         </>
       )}
+      <TimeEntryForm preselectedIssueId={selectedIssue?.id} />
       <IssuesSearch onSelect={setSelectedIssue} />
     </div>
   );
