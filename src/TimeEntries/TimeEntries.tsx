@@ -15,21 +15,25 @@ export function TimeEntries() {
   const sortedTimeEntries = React.useMemo(() => {
     return timeEntries && [...timeEntries].sort(sortByDateAsc);
   }, [timeEntries])
+  const total = React.useMemo(() => {
+    return timeEntries?.reduce((sum, timeEntry) => sum + timeEntry.hours, 0) ?? 0
+  }, [timeEntries])
 
   return (
     <div>
       <h2>Here's your time entries for today</h2>
-      {!sortedTimeEntries && (
-        <p>Loading...</p>
-      )}
+      {!sortedTimeEntries && <p>Loading...</p>}
       {sortedTimeEntries && (
         <>
           {sortedTimeEntries.length > 0 && (
-            <ul>
-              {sortedTimeEntries.map((timeEntry) => (
-                <TimeEntryRow key={timeEntry.id} timeEntry={timeEntry} />
-              ))}
-            </ul>
+            <>
+              <ul>
+                {sortedTimeEntries.map((timeEntry) => (
+                  <TimeEntryRow key={timeEntry.id} timeEntry={timeEntry} />
+                ))}
+              </ul>
+              <p>Total: {total}h</p>
+            </>
           )}
           {sortedTimeEntries.length === 0 && <p>No time entries for today</p>}
         </>

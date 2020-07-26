@@ -1,5 +1,4 @@
 import React, { SetStateAction } from 'react';
-import './App.css';
 import { AppState } from './models/AppState';
 import { AppStateContext, useAppStateAutosaver } from './hooks/appState';
 import { Login } from './Login/Login';
