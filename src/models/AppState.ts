@@ -1,7 +1,7 @@
-import { User } from "./UsersResponse"
-import { TimeEntry } from "./TimeEntriesResponse"
-import { TimeEntryActivity } from "./TimeEntryActivity"
-import { Project } from "./ProjectPaginatedList"
+import { User } from "./api/User"
+import { TimeEntry } from "./api/TimeEntry"
+import { TimeEntryActivity } from "./api/TimeEntryActivity"
+import { Project } from "./api/Project"
 
 export interface AppState {
   timeEntries?: TimeEntry[]

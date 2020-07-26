@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Issue } from "../models/IssuesPaginatedList";
+import { Issue } from "../models/api/Issue";
 import { useRedmineService } from "./redmineService";
 import { useApiKey } from "./apiKey";
 

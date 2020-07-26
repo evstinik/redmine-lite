@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { TimeEntry } from "../models/TimeEntriesResponse";
+import { TimeEntry } from "../models/api/TimeEntry";
 import { useDeleteTimeEntry } from '../hooks/timeEntries';
 
 interface TimeEntryRowProps {

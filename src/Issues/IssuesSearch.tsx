@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useIssuesSearch } from '../hooks/issues';
 import { IssueRow } from './IssueRow';
 import { useOnChange } from '../hooks/utils';
-import { Issue } from '../models/IssuesPaginatedList';
+import { Issue } from '../models/api/Issue';
 import { useProjects } from '../hooks/projects';
 
 interface IssuesProps {

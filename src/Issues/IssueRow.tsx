@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Issue } from '../models/IssuesPaginatedList';
+import { Issue } from '../models/api/Issue';
 
 interface IssueRowProps {
   onClick?: (issue: Issue) => void

@@ -1,8 +1,8 @@
 import { useAppState } from "./appState";
 import { useEffect, useCallback, useMemo, useState } from "react";
 import { useRedmineService } from "./redmineService";
-import { CreateTimeEntry } from "../models/TimeEntryRequest";
-import { TimeEntryActivity } from "../models/TimeEntryActivity";
+import { CreateTimeEntry } from "../models/api/CreateTimeEntry";
+import { TimeEntryActivity } from "../models/api/TimeEntryActivity";
 
 export function useTimeEntries() {
   const [{ timeEntries, apiKey }, setAppState] = useAppState()

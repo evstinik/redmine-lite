@@ -1,9 +1,9 @@
-import { User, UsersResponse } from "./UsersResponse"
-import { TimeEntry, TimeEntriesResponse, CreateTimeEntryResponse } from "./TimeEntriesResponse"
-import { CreateTimeEntry } from "./TimeEntryRequest"
-import { TimeEntryActivity, TimeEntryActivityResponse } from "./TimeEntryActivity"
-import { IssuesPaginatedList } from "./IssuesPaginatedList"
-import { ProjectPaginatedList } from "./ProjectPaginatedList"
+import { User, UsersResponse } from "./api/User"
+import { TimeEntry, TimeEntriesResponse, CreateTimeEntryResponse } from "./api/TimeEntry"
+import { CreateTimeEntry } from "./api/CreateTimeEntry"
+import { TimeEntryActivity, TimeEntryActivityResponse } from "./api/TimeEntryActivity"
+import { IssuesPaginatedList } from "./api/Issue"
+import { ProjectPaginatedList } from "./api/Project"
 
 const API_URL = process.env.REACT_APP_API_URL ?? ''
 

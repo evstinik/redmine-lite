@@ -3,12 +3,12 @@ import './App.css';
 import { AppState } from './models/AppState';
 import { AppStateContext, useAppStateAutosaver } from './hooks/appState';
 import { Login } from './Login/Login';
-import { TimeEntries } from './TimeEntries/TimeEntries';
 import { RedmineServiceContext } from './hooks/redmineService';
 import { RedmineService } from './models/RedmineService';
 import { useTimeEntryActivitiesFetcher } from './hooks/timeEntries';
 import { useLogout } from './hooks/user';
 import { useApiKey } from './hooks/apiKey';
+import { MainPage } from './pages/MainPage';
 
 function AppWithContexts() {
   const apiKey = useApiKey()
@@ -19,7 +19,7 @@ function AppWithContexts() {
   return (
     <>
       {!apiKey && <Login />}
-      {apiKey && <TimeEntries />}
+      {apiKey && <MainPage />}
     </>
   );
 }
