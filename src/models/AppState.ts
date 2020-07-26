@@ -1,9 +1,11 @@
 import { User } from "./UsersResponse"
 import { TimeEntry } from "./TimeEntriesResponse"
 import { TimeEntryActivity } from "./TimeEntryActivity"
+import { Project } from "./ProjectPaginatedList"
 
 export interface AppState {
   timeEntries?: TimeEntry[]
+  projects?: Project[]
   apiKey?: string
   user?: User
   activities?: TimeEntryActivity[]

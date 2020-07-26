@@ -2,15 +2,22 @@ import { User, UsersResponse } from "./UsersResponse"
 import { TimeEntry, TimeEntriesResponse, CreateTimeEntryResponse } from "./TimeEntriesResponse"
 import { CreateTimeEntry } from "./TimeEntryRequest"
 import { TimeEntryActivity, TimeEntryActivityResponse } from "./TimeEntryActivity"
+import { IssuesPaginatedList } from "./IssuesPaginatedList"
+import { ProjectPaginatedList } from "./ProjectPaginatedList"
 
 const API_URL = process.env.REACT_APP_API_URL ?? ''
 
 interface RequestParams {
-  queryParams?: {[name: string]: string}
+  queryParams?: { [name: string]: string | number }
   apiKey?: string
   method?: string
   body?: any // any json convertable
   emptyResponse?: boolean
+}
+
+export interface IssuesSearchParams {
+  query?: string
+  projectId?: number
 }
 
 export class UnprocessableEntityError extends Error {
@@ -55,6 +62,46 @@ export class RedmineService {
     )
   }
 
+  public async getIssues(
+    offset: number = 0, 
+    limit: number = 10, 
+    searchParams: IssuesSearchParams | undefined = undefined,
+    apiKey: string
+  ): Promise<IssuesPaginatedList> {
+    let queryParams: { [name: string]: string | number } = {
+      offset,
+      limit
+    }
+    if (searchParams?.query && searchParams?.query?.length > 0) {
+      queryParams = {
+        ...queryParams,
+        "f[]": "subject",
+        "op[subject]": "~",
+        "v[subject][]": searchParams.query,
+        sort: "updated_on:desc",
+      };
+    }
+    if (searchParams?.projectId && Number(searchParams?.projectId) > 0) {
+      queryParams['project_id'] = searchParams.projectId
+    }
+    return await this.request<IssuesPaginatedList>(`/issues`, { apiKey, queryParams }) 
+  }
+
+  public async getProjects(
+    offset: number = 0,
+    limit: number = 10,
+    apiKey: string
+  ): Promise<ProjectPaginatedList> {
+    let queryParams: { [name: string]: string | number } = {
+      offset,
+      limit,
+    };
+    return await this.request<ProjectPaginatedList>(`/projects`, {
+      apiKey,
+      queryParams,
+    }); 
+  }
+
   public async getTimeEntryActivities(apiKey: string): Promise<TimeEntryActivity[]> {
     const { time_entry_activities } = await this.request<TimeEntryActivityResponse>(
       "/enumerations/time_entry_activities",
@@ -78,7 +125,7 @@ export class RedmineService {
   ): Promise<T> {
     const url = new URL(`${API_URL}${endpoint}.json`, window.location as any);
     Object.keys(queryParams)
-      .forEach((name) => url.searchParams.append(name, queryParams[name]))
+      .forEach((name) => url.searchParams.append(name, queryParams[name].toString()))
     let headers: {[name: string]: string} = {
         "X-Redmine-API-Key": apiKey
     }

@@ -3,16 +3,28 @@ import { useOnChange } from '../hooks/utils'
 import { useAddTimeEntry, useTimeEntryActivities, usePrimaryTimeEntryActivity } from '../hooks/timeEntries'
 import { UnprocessableEntityError } from '../models/RedmineService'
 
-export function TimeEntryForm() {
+interface TimeEntryFormProps {
+  preselectedIssueId?: number
+}
+
+export function TimeEntryForm(props: TimeEntryFormProps) {
+  const { preselectedIssueId } = props
+
   const activities = useTimeEntryActivities()
   const primaryActivityId = usePrimaryTimeEntryActivity()
 
   const [isCreating, setIsCreating] = React.useState(false)
-  const [issue, setIssue] = React.useState('')
+  const [issue, setIssue] = React.useState(preselectedIssueId ?? '')
   const [spent, setSpent] = React.useState('')
   const [activity, setActivity] = React.useState(primaryActivityId)
   const [comment, setComment] = React.useState('')
   const [errors, setErrors] = React.useState<string[]>([])
+
+  React.useEffect(() => {
+    if (preselectedIssueId) {
+      setIssue(preselectedIssueId);
+    }
+  }, [preselectedIssueId])
 
   const addTimeEntry = useAddTimeEntry()
 

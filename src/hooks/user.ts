@@ -18,6 +18,7 @@ export function useUser() {
             })
           }
         })
+        .catch()
     }
     return () => { isLatest = false }
   }, [appState, setAppState, redmineService])

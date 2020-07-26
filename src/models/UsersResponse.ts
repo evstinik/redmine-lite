@@ -1,8 +1,4 @@
-export interface CustomField {
-  id: number;
-  name: string;
-  value: string;
-}
+import { CustomField } from "./CustomField";
 
 export interface User {
   id: number;

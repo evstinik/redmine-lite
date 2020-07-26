@@ -4,6 +4,8 @@ import { TimeEntryRow } from "./TimeEntryRow";
 import { useUser } from "../hooks/user";
 import { TimeEntryForm } from "./TimeEntryForm";
 import { TimeEntry } from "../models/TimeEntriesResponse";
+import { IssuesSearch } from "../Issues/IssuesSearch";
+import { Issue } from "../models/IssuesPaginatedList";
 
 function sortByDateAsc(te1: TimeEntry, te2: TimeEntry) {
   return (
@@ -15,9 +17,12 @@ function sortByDateAsc(te1: TimeEntry, te2: TimeEntry) {
 export function TimeEntries() {
   const user = useUser()
   const timeEntries = useTimeEntries()
+
   const sortedTimeEntries = React.useMemo(() => {
     return timeEntries && [...timeEntries].sort(sortByDateAsc);
   }, [timeEntries])
+
+  const [selectedIssue, setSelectedIssue] = React.useState<Issue>()
 
   return (
     <div>
@@ -34,9 +39,10 @@ export function TimeEntries() {
             ))}
           </ul>
           <h2>Add new time entry</h2>
-          <TimeEntryForm />
+          <TimeEntryForm preselectedIssueId={selectedIssue?.id} />
         </>
       )}
+      <IssuesSearch onSelect={setSelectedIssue} />
     </div>
   );
 }
