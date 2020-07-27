@@ -4,16 +4,23 @@ import { Greetings } from '../User/Greetings';
 import { TimeEntryForm } from '../TimeEntries/TimeEntryForm';
 import { IssuesSearch } from '../Issues/IssuesSearch';
 import { Issue } from '../models/api/Issue';
+import './MainPage.css'
 
 export function MainPage() {
   const [selectedIssue, setSelectedIssue] = React.useState<Issue>();
 
   return (
-    <div>
+    <div className="page">
       <Greetings />
-      <TimeEntries />
-      <TimeEntryForm preselectedIssueId={selectedIssue?.id} />
-      <IssuesSearch onSelect={setSelectedIssue} />
+      <div className="content">
+        <div>
+          <TimeEntries />
+          <TimeEntryForm preselectedIssueId={selectedIssue?.id} />
+        </div>
+        <div>
+          <IssuesSearch onSelect={setSelectedIssue} />
+        </div>
+      </div>
     </div>
   );
 }

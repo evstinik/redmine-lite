@@ -1,0 +1,42 @@
+.issue-row:not(:last-child) {
+  margin-bottom: 24px;
+}
+
+.issue-row > .line {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.issue-row > .line:not(:first-child) {
+  margin-top: 12px;
+}
+
+.issue-row > .line > *:not(:first-child) {
+  margin-left: 8px;
+}
+
+.issue-row > .line:nth-child(2) {
+  align-items: flex-start;
+}
+
+.issue-row .project {
+  flex: 1 1 0%;
+  text-align: right;
+  font-size: 14px;
+  color: var(--dark-secondary-fg-color);
+}
+
+.issue-row .description {
+  white-space: pre-wrap;
+  flex: 1 1 0%;
+  font-size: 12px;
+  margin: 0;
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.issue-row .author {
+  font-size: 12px;
+  font-style: italic;
+  color: rgba(0, 0, 0, 0.75);
+}

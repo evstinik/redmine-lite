@@ -1,0 +1,21 @@
+.time-entry-form label > * {
+  margin: auto;
+}
+
+.time-entry-form input.hours {
+  width: 30px;
+}
+
+.time-entry-form input.issue {
+  width: 60px;
+}
+
+.time-entry-form input.comment {
+  border-bottom-style: dashed;
+  width: 200px;
+}
+
+.time-entry-form input[type='submit'] {
+  display: block;
+  margin-top: 16px;
+}

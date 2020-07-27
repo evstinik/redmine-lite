@@ -1,0 +1,16 @@
+.time-entries-filter {
+  margin: 20px 0;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.time-entries-filter > h3 {
+  color: var(--dark-secondary-fg-color);
+  margin-bottom: 16px;
+}
+
+.time-entries-filter label {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+}

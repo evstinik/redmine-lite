@@ -1,8 +1,10 @@
 import * as React from 'react'
 import { useOnChange } from '../hooks/utils'
-import { useAddTimeEntry, useTimeEntryActivities, usePrimaryTimeEntryActivity, useDayForTimeEntries } from '../hooks/timeEntries'
+import { useAddTimeEntry, useTimeEntryActivities, usePrimaryTimeEntryActivity, useDayForTimeEntries, useFormattedDayForTimeEntries } from '../hooks/timeEntries'
 import { UnprocessableEntityError } from '../models/RedmineService'
 import { convertToString } from '../models/RelativeDateFormatter'
+import './TimeEntryForm.css'
+import { capitalize } from '../models/String'
 
 interface TimeEntryFormProps {
   preselectedIssueId?: number
@@ -22,6 +24,7 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
   const [errors, setErrors] = React.useState<string[]>([])
 
   const dayForTimeEntries = useDayForTimeEntries()
+  const formattedDay = capitalize(useFormattedDayForTimeEntries())
 
   React.useEffect(() => {
     if (preselectedIssueId) {
@@ -34,9 +37,10 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
   const reset = React.useCallback(() => {
     setIssue('')
     setSpent('')
+    setActivity(primaryActivityId)
     setComment('')
     setErrors([])
-  }, [setIssue, setSpent, setComment])
+  }, [setIssue, setSpent, setComment, primaryActivityId])
 
   const submit = React.useCallback((event) => {
     event.preventDefault() 
@@ -62,31 +66,35 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
   }, [addTimeEntry, activity, comment, spent, issue, dayForTimeEntries, reset])
 
   return (
-    <div>
+    <div className="time-entry-form">
       <h2>Add new time entry</h2>
       <form onSubmit={submit}>
         <fieldset disabled={isCreating}>
           <label>
-            Issue #
+            {formattedDay} I spent{" "}
             <input
-              id="time-entry-form-spent"
               type="text"
+              className="hours"
+              value={spent}
+              onChange={useOnChange(setSpent)}
+              required
+            />
+            h
+          </label>
+          <label>
+            {" "}
+            on issue #
+            <input
+              type="text"
+              className="issue"
               value={issue}
               onChange={useOnChange(setIssue)}
               required
             />
           </label>
           <label>
-            Spent
-            <input
-              type="text"
-              value={spent}
-              onChange={useOnChange(setSpent)}
-              required
-            />
-          </label>
-          <label>
-            Activity
+            {" "}
+            while doing{" "}
             <select
               value={activity}
               onChange={useOnChange(setActivity)}
@@ -98,23 +106,27 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
                 </option>
               ))}
             </select>
+            ,
           </label>
           <label>
-            Comment
+            {" "}
+            specifically doing{" "}
             <input
               type="text"
+              className="comment"
               value={comment}
               onChange={useOnChange(setComment)}
             />
           </label>
-          <input type="submit" value="Add" />
+          <input type="submit" className="contained" value="Add" />
         </fieldset>
       </form>
-      <ul>
+      <ul className="errors">
         {errors.map((error, idx) => (
           <li key={`${idx}-error`}>{error}</li>
         ))}
       </ul>
+      <p className="tip">You can find issue by subject in neighbour section. Also you can click on issue number to copy id into this form</p>
     </div>
   );
 }

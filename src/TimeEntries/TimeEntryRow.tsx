@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { TimeEntry } from "../models/api/TimeEntry";
 import { useDeleteTimeEntry } from '../hooks/timeEntries';
+import './TimeEntryRow.css'
 
 interface TimeEntryRowProps {
   timeEntry: TimeEntry
@@ -33,16 +34,27 @@ export function TimeEntryRow({ timeEntry }: TimeEntryRowProps) {
   }, [deleteTimeEntry, timeEntry, setIsDeleting]);
 
   return (
-    <li>
-      <span>{timeEntry.hours}h</span>
-      <span> by </span>
-      <span>{timeEntry.activity.name.toLocaleLowerCase()}</span>
-      <span> on </span>
-      <span>#{timeEntry.issue.id}</span>
-      <span> ({timeEntry.project.name})</span>:<p>{timeEntry.comments}</p>
-      <span>
-        <button disabled={isDeleting} onClick={deleteWithConfirmation}>Delete</button>
-      </span>
+    <li className="time-entry-row">
+      <div className="line">
+        <span className="hours">{timeEntry.hours}h</span>
+        <span className="issue">Issue #{timeEntry.issue.id}</span>
+        <span className="project">{timeEntry.project.name}</span>
+      </div>
+      <div className="line">
+        <p className="comment">
+          <span className="activity">{timeEntry.activity.name}: </span>
+          {timeEntry.comments}
+        </p>
+        <div className="actions">
+          <button
+            className="bordered"
+            disabled={isDeleting}
+            onClick={deleteWithConfirmation}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
     </li>
   );
 }

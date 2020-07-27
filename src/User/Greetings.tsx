@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { useUser } from '../hooks/user';
 import { UserPreferences } from './UserPreferences';
+import './Greetings.css'
 
 export function Greetings() {
   const user = useUser()
@@ -11,9 +12,15 @@ export function Greetings() {
   }, [setIsPreferencesVisible])
 
   return (
-    <div>
-      <h1 onClick={toggleUserPreferences}>Hi, {user?.firstname ?? "..."}!</h1>
-      {isPreferencesVisible && <UserPreferences />}
-    </div>
-  )
+    <header className="header">
+      <h1 className="greetings">
+        Hi,{" "}
+        <span className="action" onClick={toggleUserPreferences}>
+          {user?.firstname ?? "..."}
+        </span>
+        !
+      </h1>
+      {isPreferencesVisible && <UserPreferences className="preferences" />}
+    </header>
+  );
 }

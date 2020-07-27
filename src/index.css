@@ -11,3 +11,133 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+label > * {
+  margin-left: 8px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --dark-bg-color: #0e1e24;
+  --darker-bg-color: #091317;
+  --light-fg-color: white;
+  --light-bg-color: white;
+  --dark-fg-color: black;
+  --dark-secondary-fg-color: rgba(0, 0, 0, 0.5);
+  --action-fg-color: #e50914;
+}
+
+.action {
+  cursor: pointer;
+  color: var(--action-fg-color);
+}
+
+.action:hover {
+  text-decoration: underline;
+}
+
+button, input[type='submit'] {
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button.contained, input[type='submit'].contained {
+  background-color: var(--action-fg-color);
+  color: var(--light-fg-color);
+  border: 0;
+}
+
+button.bordered, input[type='submit'].bordered {
+  background-color: transparent;
+  border: 1px solid var(--action-fg-color);
+  color: var(--action-fg-color);
+}
+
+button:active, input[type='submit']:active {
+  filter: invert(25%);
+  outline: 0;
+}
+
+button:focus, input[type='submit']:focus {
+  outline: 0;
+}
+
+input[type="text"] {
+  outline: 0;
+  border: 0;
+  border-bottom: 1px solid var(--action-fg-color);
+  font-size: 15px;
+  font-weight: bold;
+  padding: 0 4px;
+  color: var(--action-fg-color);
+  background-color: transparent;
+}
+
+select {
+  border: 0;
+  color: var(--action-fg-color);
+  font-weight: bold;
+  font-size: 15px;
+  background-color: transparent;
+}
+
+.tip {
+  color: var(--dark-secondary-fg-color);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.tip:before {
+  content: 'Pro tip: ';
+  font-weight: bold;
+}
+
+.errors {
+  color: red;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.list-placeholder {
+  color: rgba(0,0,0,0.5);
+  padding: 32px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.hours {
+  padding: 4px 8px;
+  background-color: rgba(0,0,0,0.05);
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--dark-fg-color);
+}
+
+.hours.active {
+  cursor: pointer;
+}
+
+.hours.active:hover {
+  color: var(--light-fg-color);
+  background-color: var(--action-fg-color);
+}

@@ -1,0 +1,24 @@
+.header {
+  background-color: var(--dark-bg-color);
+  color: var(--light-fg-color);
+}
+
+.header h1 {
+  margin: 0;
+}
+
+.header > * {
+  padding: 24px;
+}
+
+.greetings {
+  margin: 0;
+}
+
+.preferences {
+  background-color: var(--darker-bg-color);
+}
+
+.preferences h2 {
+  margin-top: 0;
+}

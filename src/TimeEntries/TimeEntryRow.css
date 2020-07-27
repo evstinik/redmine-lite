@@ -1,0 +1,39 @@
+.time-entry-row:not(:last-child) {
+  margin-bottom: 16px;
+}
+
+.time-entry-row > .line {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.time-entry-row > .line:not(:first-child) {
+  margin-top: 12px;
+}
+
+.time-entry-row > .line > *:not(:first-child) {
+  margin-left: 8px;
+}
+
+.time-entry-row > .line:nth-child(2) {
+  align-items: flex-start;
+}
+
+.time-entry-row .project {
+  flex: 1 1 0%;
+  text-align: right;
+  font-size: 14px;
+  color: var(--dark-secondary-fg-color);
+}
+
+.time-entry-row .comment {
+  flex: 1 1 0%;
+  font-size: 12px;
+  margin: 0;
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.time-entry-row .activity {
+  color: var(--dark-secondary-fg-color);
+}

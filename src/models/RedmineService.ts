@@ -39,6 +39,7 @@ export class RedmineService {
     const queryParams = {
       from: day.toJSON().slice(0, 10),
       to: day.toJSON().slice(0, 10),
+      limit: 100,
       user_id: userId,
     };
     const { time_entries } = await this.request<TimeEntriesResponse>('/time_entries', { queryParams, apiKey })

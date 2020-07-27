@@ -3,7 +3,7 @@ import { useEffect, useCallback, useMemo, useState } from "react";
 import { useRedmineService } from "./redmineService";
 import { CreateTimeEntry } from "../models/api/CreateTimeEntry";
 import { TimeEntryActivity } from "../models/api/TimeEntryActivity";
-import { isDaysEqual } from '../models/RelativeDateFormatter'
+import { isDaysEqual, RelativeDateFormatter } from '../models/RelativeDateFormatter'
 
 export function useTimeEntries() {
   const [{ timeEntries, apiKey, dayForTimeEntries }, setAppState] = useAppState()
@@ -115,4 +115,12 @@ export function usePrimaryTimeEntryActivity() {
 export function useDayForTimeEntries() {
   const [{ dayForTimeEntries }] = useAppState()
   return dayForTimeEntries ?? new Date()
+}
+
+export function useFormattedDayForTimeEntries() {
+  const day = useDayForTimeEntries()
+  return useMemo(() => {
+    const df = new RelativeDateFormatter();
+    return df.format(day);
+  }, [day]);
 }

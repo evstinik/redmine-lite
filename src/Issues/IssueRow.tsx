@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Issue } from '../models/api/Issue';
+import './IssueRow.css'
 
 interface IssueRowProps {
   onClick?: (issue: Issue) => void
@@ -8,19 +9,24 @@ interface IssueRowProps {
 
 export function IssueRow(props: IssueRowProps) {
   const { issue, onClick } = props
-  const { id, author, project, subject } = issue
+  const { id, author, project, subject, description } = issue
 
   const handleClick = React.useCallback(() => {
     onClick?.(issue)
   }, [onClick, issue])
 
   return (
-    <li onClick={handleClick}>
-      <div>
-        #{id} - {subject}
+    <li className="issue-row">
+      <div className="line">
+        <span className="id hours active" onClick={handleClick}>
+          #{id}
+        </span>
+        <span className="subject">{subject}</span>
+        <span className="project">{project.name}</span>
       </div>
-      <div>
-        {project.name} ({author.name})
+      <p className="line description">{description}</p>
+      <div className="line">
+        <span className="author">{author.name}</span>
       </div>
     </li>
   );

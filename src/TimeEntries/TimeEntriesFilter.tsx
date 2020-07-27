@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useOnChange } from '../hooks/utils'
 import { useAppState } from '../hooks/appState'
 import { convertToString } from '../models/RelativeDateFormatter'
+import './TimeEntriesFilter.css'
 
 export function TimeEntriesFilter() {
   const [{ dayForTimeEntries }, setAppState] = useAppState()
@@ -18,8 +19,8 @@ export function TimeEntriesFilter() {
   }, [setAppState])
 
   return (
-    <div>
-      <h3>Time entries filter</h3>
+    <div className='time-entries-filter'>
+      <h3>Filter</h3>
       <form>
         <label>
           Day

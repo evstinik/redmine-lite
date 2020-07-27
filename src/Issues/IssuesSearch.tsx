@@ -4,6 +4,7 @@ import { IssueRow } from './IssueRow';
 import { useOnChange } from '../hooks/utils';
 import { Issue } from '../models/api/Issue';
 import { useProjects } from '../hooks/projects';
+import './IssuesSearch.css'
 
 interface IssuesProps {
   onSelect?: (issue: Issue) => void
@@ -31,23 +32,19 @@ export function IssuesSearch(props: IssuesProps) {
   );
 
   return (
-    <div>
+    <div className="issues-search">
       <h2>Issues search</h2>
-      <form onSubmit={search}>
-        <label>
-          Query
-          <input type="text" value={query} onChange={useOnChange(setQuery)} />
-        </label>
-        <label>
-          Project
-          <select value={projectId} onChange={useOnChange(setProjectId)}>
-            <option value={0}>Any</option>
-            {projects.map(project => (
-              <option key={project.id} value={project.id}>{project.name}</option>
-            ))}
-          </select>
-        </label>
-        <input type="submit" value="Search" />
+      <form className="search-form" onSubmit={search}>
+        <select value={projectId} onChange={useOnChange(setProjectId)}>
+          <option value={0}>Any project</option>
+          {projects.map((project) => (
+            <option key={project.id} value={project.id}>
+              {project.name}
+            </option>
+          ))}
+        </select>
+        <input type="text" value={query} placeholder='Search query...' onChange={useOnChange(setQuery)} />
+        <input type="submit" value="Search" className="contained" />
       </form>
       {issues.length > 0 && (
         <ul>
@@ -58,8 +55,12 @@ export function IssuesSearch(props: IssuesProps) {
       )}
       {issues.length === 0 && (
         <>
-          {isLoading && <p>Loading...</p>}
-          {!isLoading && <p>Nothing found for your query, try something else</p>}
+          {isLoading && <p className="list-placeholder">Loading...</p>}
+          {!isLoading && (
+            <p className="list-placeholder">
+              Nothing found for your query, try something else
+            </p>
+          )}
         </>
       )}
     </div>

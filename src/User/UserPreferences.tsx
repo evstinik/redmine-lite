@@ -3,8 +3,9 @@ import { useAppState } from '../hooks/appState'
 import { useLogout } from '../hooks/user'
 import { useTimeEntryActivities } from '../hooks/timeEntries'
 import { useOnChange } from '../hooks/utils'
+import './UserPreferences.css'
 
-export function UserPreferences() {
+export function UserPreferences(props: React.HTMLAttributes<HTMLDivElement>) {
   const [{ primaryActivityId }, setAppState] = useAppState()
 
   const logout = useLogout(setAppState)
@@ -15,7 +16,7 @@ export function UserPreferences() {
   }, [setAppState])
 
   return (
-    <div>
+    <div {...props}>
       <h2>User preferences</h2>
       <label>
         Your primary activity
@@ -30,7 +31,7 @@ export function UserPreferences() {
           ))}
         </select>
       </label>
-      <button onClick={logout}>Logout</button>
+      <button className='contained logout' onClick={logout}>Logout</button>
     </div>
   );
 }
