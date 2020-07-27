@@ -1,0 +1,19 @@
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+}
+
+.login > *:not(:first-child) {
+  margin-top: 32px;
+}
+
+.login > form > *:not(:first-child) {
+  margin-left: 8px;
+}
+
+.login .tip {
+  max-width: 600px;
+}

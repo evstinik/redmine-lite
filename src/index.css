@@ -107,7 +107,7 @@ select {
 }
 
 .tip:before {
-  content: 'Pro tip: ';
+  content: 'Tip: ';
   font-weight: bold;
 }
 
@@ -140,4 +140,9 @@ select {
 .hours.active:hover {
   color: var(--light-fg-color);
   background-color: var(--action-fg-color);
+}
+
+.page {
+  width: 100vw;
+  min-height: 100vh;
 }
