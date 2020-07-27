@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { useOnChange } from '../hooks/utils'
-import { useAddTimeEntry, useTimeEntryActivities, usePrimaryTimeEntryActivity } from '../hooks/timeEntries'
+import { useAddTimeEntry, useTimeEntryActivities, usePrimaryTimeEntryActivity, useDayForTimeEntries } from '../hooks/timeEntries'
 import { UnprocessableEntityError } from '../models/RedmineService'
+import { convertToString } from '../models/RelativeDateFormatter'
 
 interface TimeEntryFormProps {
   preselectedIssueId?: number
@@ -19,6 +20,8 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
   const [activity, setActivity] = React.useState(primaryActivityId)
   const [comment, setComment] = React.useState('')
   const [errors, setErrors] = React.useState<string[]>([])
+
+  const dayForTimeEntries = useDayForTimeEntries()
 
   React.useEffect(() => {
     if (preselectedIssueId) {
@@ -42,20 +45,21 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
       activity_id: Number(activity),
       comments: comment,
       hours: Number(spent),
-      issue_id: Number(issue)
+      issue_id: Number(issue),
+      spent_on: dayForTimeEntries && convertToString(dayForTimeEntries),
     })
-    .then(reset)
-    .catch(error => {
-      if (error instanceof UnprocessableEntityError) {
-        setErrors(error.errors)
-      } else {
-        setErrors([error.toString()])
-      }
-    })
-    .then(() => {
-      setIsCreating(false)
-    })
-  }, [addTimeEntry, activity, comment, spent, issue, reset, setIsCreating])
+      .then(reset)
+      .catch((error) => {
+        if (error instanceof UnprocessableEntityError) {
+          setErrors(error.errors);
+        } else {
+          setErrors([error.toString()]);
+        }
+      })
+      .then(() => {
+        setIsCreating(false);
+      });
+  }, [addTimeEntry, activity, comment, spent, issue, dayForTimeEntries, reset])
 
   return (
     <div>

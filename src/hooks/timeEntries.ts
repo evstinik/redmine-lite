@@ -3,27 +3,34 @@ import { useEffect, useCallback, useMemo, useState } from "react";
 import { useRedmineService } from "./redmineService";
 import { CreateTimeEntry } from "../models/api/CreateTimeEntry";
 import { TimeEntryActivity } from "../models/api/TimeEntryActivity";
+import { isDaysEqual } from '../models/RelativeDateFormatter'
 
 export function useTimeEntries() {
-  const [{ timeEntries, apiKey }, setAppState] = useAppState()
+  const [{ timeEntries, apiKey, dayForTimeEntries }, setAppState] = useAppState()
   const [isLoading, setIsLoading] = useState(false);
   const redmineService = useRedmineService()
   useEffect(() => {
-    if (!timeEntries && !isLoading) {
+    const day = dayForTimeEntries ?? new Date()
+    const isCacheInvalid = !timeEntries || !isDaysEqual(timeEntries.day, day)
+    if (isCacheInvalid && !isLoading) {
       setIsLoading(true);
       redmineService
-        .getTimeEntries("me", new Date(), apiKey!)
+        .getTimeEntries("me", day, apiKey!)
+        .then((value) => ({
+          value,
+          day
+        }))
         .then((timeEntries) => {
           setAppState(appState => ({
             ...appState,
-            timeEntries,
+            timeEntries
           }));
         })
         .catch()
         .then(() => setIsLoading(false));
     }
-  }, [isLoading, setAppState, redmineService, timeEntries, apiKey]);
-  return timeEntries
+  }, [isLoading, setAppState, redmineService, timeEntries, apiKey, dayForTimeEntries]);
+  return timeEntries?.value ?? []
 }
 
 export function useAddTimeEntry() {
@@ -34,10 +41,13 @@ export function useAddTimeEntry() {
       .then(createdTimeEntry => {
         setAppState(appState => ({
           ...appState,
-          timeEntries: [
-            ...(appState.timeEntries ?? []),
-            createdTimeEntry
-          ]
+          timeEntries: {
+            day: appState.timeEntries?.day ?? appState.dayForTimeEntries ?? new Date(),
+            value: [
+              ...(appState.timeEntries?.value ?? []),
+              createdTimeEntry
+            ]
+          }
         }))
       })
   }, [apiKey, redmineService, setAppState])
@@ -53,9 +63,12 @@ export function useDeleteTimeEntry() {
         .then(() => {
           setAppState((appState) => ({
             ...appState,
-            timeEntries:
-              appState.timeEntries &&
-              appState.timeEntries.filter(({ id }) => timeEntryId !== id),
+            timeEntries: appState.timeEntries && {
+              ...appState.timeEntries,
+              value: appState.timeEntries.value.filter(
+                ({ id }) => timeEntryId !== id
+              )
+            }
           }));
         });
     },
@@ -97,4 +110,9 @@ export function usePrimaryTimeEntryActivity() {
     return activities[0].id
   }
   return undefined
+}
+
+export function useDayForTimeEntries() {
+  const [{ dayForTimeEntries }] = useAppState()
+  return dayForTimeEntries ?? new Date()
 }

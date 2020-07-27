@@ -4,7 +4,11 @@ import { TimeEntryActivity } from "./api/TimeEntryActivity"
 import { Project } from "./api/Project"
 
 export interface AppState {
-  timeEntries?: TimeEntry[]
+  timeEntries?: {
+    value: TimeEntry[]
+    day: Date
+  }
+  dayForTimeEntries?: Date
   projects?: Project[]
   apiKey?: string
   user?: User
