@@ -5,6 +5,7 @@ import { TimeEntryForm } from '../TimeEntries/TimeEntryForm';
 import { IssuesSearch } from '../Issues/IssuesSearch';
 import { Issue } from '../models/api/Issue';
 import './MainPage.css'
+import { TimeEntriesImport } from '../TimeEntries/TimeEntriesImport';
 
 export function MainPage() {
   const [selectedIssue, setSelectedIssue] = React.useState<Issue>();
@@ -16,6 +17,7 @@ export function MainPage() {
         <div>
           <TimeEntries />
           <TimeEntryForm preselectedIssueId={selectedIssue?.id} />
+          <TimeEntriesImport />
         </div>
         <div>
           <IssuesSearch onSelect={setSelectedIssue} />

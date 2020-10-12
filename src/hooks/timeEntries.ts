@@ -3,7 +3,7 @@ import { useEffect, useCallback, useMemo, useState } from "react";
 import { useRedmineService } from "./redmineService";
 import { CreateTimeEntry } from "../models/api/CreateTimeEntry";
 import { TimeEntryActivity } from "../models/api/TimeEntryActivity";
-import { isDaysEqual, RelativeDateFormatter } from '../models/RelativeDateFormatter'
+import { convertToString, isDaysEqual, RelativeDateFormatter } from '../models/RelativeDateFormatter'
 
 export function useTimeEntries() {
   const [{ timeEntries, apiKey, dayForTimeEntries }, setAppState] = useAppState()
@@ -35,22 +35,27 @@ export function useTimeEntries() {
 
 export function useAddTimeEntry() {
   const redmineService = useRedmineService()
-  const [{ apiKey }, setAppState] = useAppState()
+  const [{ apiKey, dayForTimeEntries = new Date() }, setAppState] = useAppState();
   return useCallback(async (timeEntry: CreateTimeEntry) => {
     return redmineService.addTimeEntry(timeEntry, apiKey!)
       .then(createdTimeEntry => {
-        setAppState(appState => ({
+        // eslint-disable-next-line eqeqeq
+        if (createdTimeEntry.spent_on != convertToString(dayForTimeEntries)) {
+          // do not update cache if time entry is not intended for currently selected day
+          return
+        }
+        setAppState((appState) => ({
           ...appState,
           timeEntries: {
-            day: appState.timeEntries?.day ?? appState.dayForTimeEntries ?? new Date(),
-            value: [
-              ...(appState.timeEntries?.value ?? []),
-              createdTimeEntry
-            ]
-          }
-        }))
+            day:
+              appState.timeEntries?.day ??
+              appState.dayForTimeEntries ??
+              new Date(),
+            value: [...(appState.timeEntries?.value ?? []), createdTimeEntry],
+          },
+        }));
       })
-  }, [apiKey, redmineService, setAppState])
+  }, [apiKey, dayForTimeEntries, redmineService, setAppState])
 }
 
 export function useDeleteTimeEntry() {

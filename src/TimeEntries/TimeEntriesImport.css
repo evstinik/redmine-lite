@@ -1,0 +1,23 @@
+.time-entries-import .time-entries-list > *:not(:first-child) {
+  margin-top: 8px;
+}
+
+.time-entries-import .time-entries-list .time-entry {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.time-entries-import .time-entries-list .time-entry > *:not(:first-child) {
+  margin-left: 8px;
+}
+
+.time-entries-import .import-form > fieldset {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.time-entries-import .import-form > fieldset > *:not(:first-child) {
+  margin-top: 8px;
+}

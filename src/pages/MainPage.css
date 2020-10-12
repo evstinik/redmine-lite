@@ -12,6 +12,10 @@
   margin-top: 16px;
 }
 
+.page .time-entries-import {
+  margin-top: 32px;
+}
+
 @media only screen and (max-width: 600px) {
   .page > .content {
     flex-direction: column;
