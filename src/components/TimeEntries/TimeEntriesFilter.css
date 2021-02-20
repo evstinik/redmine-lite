@@ -14,3 +14,15 @@
   flex-direction: row;
   align-items: center;
 }
+
+.time-entries-filter .date-picker {
+  padding: 4px;
+  border-radius: 4px;
+  background-color: var(--action-fg-color);
+  color: white;
+  border: 0;
+  display: inline-block;
+  cursor: pointer;
+  width: 100px;
+  text-align: center;
+}

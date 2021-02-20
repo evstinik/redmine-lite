@@ -1,9 +1,9 @@
 import * as React from "react";
-import { useTimeEntries, useDayForTimeEntries } from "../hooks/timeEntries";
+import { useTimeEntries, useDayForTimeEntries } from "hooks/timeEntries";
 import { TimeEntryRow } from "./TimeEntryRow";
-import { TimeEntry } from "../models/api/TimeEntry";
+import { TimeEntry } from "models/api/TimeEntry";
 import { TimeEntriesFilter } from "./TimeEntriesFilter";
-import { RelativeDateFormatter } from "../models/RelativeDateFormatter";
+import { RelativeDateFormatter } from "models/RelativeDateFormatter";
 import './TimeEntries.css'
 
 function sortByDateAsc(te1: TimeEntry, te2: TimeEntry) {

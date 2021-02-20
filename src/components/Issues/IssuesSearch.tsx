@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { useIssuesSearch } from '../hooks/issues';
+import { useIssuesSearch } from 'hooks/issues';
 import { IssueRow } from './IssueRow';
-import { useOnChange } from '../hooks/utils';
-import { Issue } from '../models/api/Issue';
-import { useProjects } from '../hooks/projects';
+import { useOnChange } from 'hooks/utils';
+import { Issue } from 'models/api/Issue';
+import { useProjects } from 'hooks/projects';
 import './IssuesSearch.css'
 
 interface IssuesProps {

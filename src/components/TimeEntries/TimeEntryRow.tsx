@@ -1,10 +1,11 @@
 import * as React from 'react'
-import { TimeEntry } from "../models/api/TimeEntry";
-import { useDeleteTimeEntry } from '../hooks/timeEntries';
+import { DetailedTimeEntry } from "models/api/TimeEntry";
+import { useDeleteTimeEntry } from 'hooks/timeEntries';
 import './TimeEntryRow.css'
+import { RedmineLink } from 'components/RedmineLink/RedmineLink';
 
 interface TimeEntryRowProps {
-  timeEntry: TimeEntry
+  timeEntry: DetailedTimeEntry
 }
 
 export function TimeEntryRow({ timeEntry }: TimeEntryRowProps) {
@@ -37,7 +38,14 @@ export function TimeEntryRow({ timeEntry }: TimeEntryRowProps) {
     <li className="time-entry-row">
       <div className="line">
         <span className="hours">{timeEntry.hours}h</span>
-        <span className="issue">Issue #{timeEntry.issue.id}</span>
+        <RedmineLink to={`/issues/${timeEntry.issue.id}`} className="issue">
+          {timeEntry.issue.subject && (
+            <>#{timeEntry.issue.id}: {timeEntry.issue.subject}</>
+          )}
+          {!timeEntry.issue.subject && (
+            <>Issue #{timeEntry.issue.id}</>
+          )}
+        </RedmineLink>
         <span className="project">{timeEntry.project.name}</span>
       </div>
       <div className="line">

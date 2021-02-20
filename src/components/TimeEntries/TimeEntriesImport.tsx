@@ -3,9 +3,9 @@ import {
   useAddTimeEntry,
   usePrimaryTimeEntryActivity,
   useTimeEntryActivities,
-} from "../hooks/timeEntries";
-import { useOnChange } from "../hooks/utils";
-import { UnprocessableEntityError } from "../models/RedmineService";
+} from "hooks/timeEntries";
+import { useOnChange } from "hooks/utils";
+import { UnprocessableEntityError } from "models/RedmineService";
 import "./TimeEntriesImport.css";
 
 interface ImportedTimeEntry {

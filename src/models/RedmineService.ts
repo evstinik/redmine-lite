@@ -13,6 +13,7 @@ interface RequestParams {
   method?: string
   body?: any // any json convertable
   emptyResponse?: boolean
+  escapeParams?: boolean
 }
 
 export interface IssuesSearchParams {
@@ -88,6 +89,16 @@ export class RedmineService {
     return await this.request<IssuesPaginatedList>(`/issues`, { apiKey, queryParams }) 
   }
 
+  public async getIssuesByIds(ids: number[], apiKey: string): Promise<IssuesPaginatedList> {
+    const queryParams = {
+      offset: 0,
+      limit: 100,
+      issue_id: ids.join(','),
+      sort: 'updated_on:desc'
+    }
+    return await this.request<IssuesPaginatedList>(`/issues`, { apiKey, queryParams, escapeParams: false })
+  }
+
   public async getProjects(
     offset: number = 0,
     limit: number = 10,
@@ -121,41 +132,51 @@ export class RedmineService {
     { 
       queryParams = {}, apiKey = '', 
       method = 'GET', body,
+      escapeParams = true,
       emptyResponse = false
     }: RequestParams = {}
   ): Promise<T> {
-    const url = new URL(`${API_URL}${endpoint}.json`, window.location as any);
-    Object.keys(queryParams)
-      .forEach((name) => url.searchParams.append(name, queryParams[name].toString()))
+    const makeUrlWithEscape = () => {
+      const url = new URL(`${API_URL}${endpoint}.json`, window.location as any);
+      Object.keys(queryParams).forEach((name) =>
+        url.searchParams.append(name, queryParams[name].toString())
+      );
+      return url.toString()
+    }
+    const makeUrlWithoutEscape = () => {
+      const params = Object.keys(queryParams).map(key => [key, queryParams[key]].join('=')).join('&')
+      return `${API_URL}${endpoint}.json?${params}`
+    }
+    const url = escapeParams ? makeUrlWithEscape() : makeUrlWithoutEscape()
     let headers: {[name: string]: string} = {
         "X-Redmine-API-Key": apiKey
     }
     if (body && method !== 'GET') {
       headers['Content-Type'] = 'application/json'
     }
-    return fetch(url.toString(), {
+    return fetch(url, {
       method,
       body: body && JSON.stringify(body),
-      headers
+      headers,
     })
-      .then(r => {
+      .then((r) => {
         if (r.status === 401) {
-          this.onUnauthorized?.()
-          throw new Error('Unauthorized')
+          this.onUnauthorized?.();
+          throw new Error("Unauthorized");
         } else if (r.status === 422) {
-          return r.json().then(errorResponse => {
-            throw new UnprocessableEntityError(errorResponse.errors ?? [])
-          })
+          return r.json().then((errorResponse) => {
+            throw new UnprocessableEntityError(errorResponse.errors ?? []);
+          });
         } else if (!r.ok) {
-          throw new Error(`${r.status} ${r.statusText}`)
+          throw new Error(`${r.status} ${r.statusText}`);
         }
-        return r
+        return r;
       })
       .then((r) => {
         if (emptyResponse) {
-          return
+          return;
         }
-        return r.json()
+        return r.json();
       });
   }
 }

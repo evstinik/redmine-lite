@@ -41,6 +41,16 @@ fieldset {
   --action-fg-color: #e50914;
 }
 
+a, a:visited {
+  font-style: normal;
+  font-weight: bold;
+  text-decoration: none;
+  color: var(--action-fg-color);
+}
+a:hover {
+  text-decoration: underline;
+}
+
 .action {
   cursor: pointer;
   color: var(--action-fg-color);

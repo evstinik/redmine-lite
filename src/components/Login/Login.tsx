@@ -1,7 +1,8 @@
 import * as React from 'react'
-import { useRedmineService } from '../hooks/redmineService'
-import { useAppState } from '../hooks/appState'
-import { useOnChange } from '../hooks/utils'
+import { RedmineLink } from "components/RedmineLink/RedmineLink";
+import { useRedmineService } from 'hooks/redmineService'
+import { useAppState } from 'hooks/appState'
+import { useOnChange } from 'hooks/utils'
 import './Login.css'
 
 export function Login() {
@@ -32,10 +33,11 @@ export function Login() {
       <form onSubmit={login}>
         <label>API Key</label>
         <input value={apiKey} onChange={handleInputChange} required />
-        <input type='submit' value='Login' className='contained'></input>
+        <input type="submit" value="Login" className="contained"></input>
       </form>
       <div className="tip">
-        You can find your API key on your account page ( /my/account ) when
+        You can find your API key on{" "}
+        <RedmineLink to="/my/account" fallbackToText>your account page</RedmineLink> when
         logged in, on the right-hand pane of the default layout.
       </div>
     </div>

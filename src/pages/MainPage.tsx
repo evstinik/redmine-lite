@@ -1,14 +1,19 @@
 import * as React from 'react'
-import { TimeEntries } from '../TimeEntries/TimeEntries';
-import { Greetings } from '../User/Greetings';
-import { TimeEntryForm } from '../TimeEntries/TimeEntryForm';
-import { IssuesSearch } from '../Issues/IssuesSearch';
 import { Issue } from '../models/api/Issue';
 import './MainPage.css'
-import { TimeEntriesImport } from '../TimeEntries/TimeEntriesImport';
+import {
+  TimeEntries,
+  Greetings,
+  TimeEntryForm,
+  IssuesSearch,
+  TimeEntriesImport
+} from "components";
 
 export function MainPage() {
-  const [selectedIssue, setSelectedIssue] = React.useState<Issue>();
+  const [selectedIssue, setSelectedIssue] = React.useState<Issue | null>(null);
+  const resetSelectedIssues = React.useCallback(() => {
+    setSelectedIssue(null)
+  }, [])
 
   return (
     <div className="page">
@@ -16,7 +21,10 @@ export function MainPage() {
       <div className="content">
         <div>
           <TimeEntries />
-          <TimeEntryForm preselectedIssueId={selectedIssue?.id} />
+          <TimeEntryForm
+            preselectedIssueId={selectedIssue?.id}
+            onResetSelectedIssue={resetSelectedIssues}
+          />
           <TimeEntriesImport />
         </div>
         <div>

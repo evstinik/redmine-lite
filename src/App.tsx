@@ -1,7 +1,7 @@
 import React, { SetStateAction } from 'react';
 import { AppState } from './models/AppState';
 import { AppStateContext, useAppStateAutosaver } from './hooks/appState';
-import { Login } from './Login/Login';
+import { Login } from 'components';
 import { RedmineServiceContext } from './hooks/redmineService';
 import { RedmineService } from './models/RedmineService';
 import { useTimeEntryActivitiesFetcher } from './hooks/timeEntries';

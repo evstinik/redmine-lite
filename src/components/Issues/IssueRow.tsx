@@ -1,6 +1,7 @@
 import * as React from 'react'
-import { Issue } from '../models/api/Issue';
+import { Issue } from 'models/api/Issue';
 import './IssueRow.css'
+import { RedmineLink } from 'components/RedmineLink/RedmineLink';
 
 interface IssueRowProps {
   onClick?: (issue: Issue) => void
@@ -21,7 +22,7 @@ export function IssueRow(props: IssueRowProps) {
         <span className="id hours active" onClick={handleClick}>
           #{id}
         </span>
-        <span className="subject">{subject}</span>
+        <RedmineLink to={`/issues/${id}`} className="subject">{subject}</RedmineLink>
         <span className="project">{project.name}</span>
       </div>
       <p className="line description">{description}</p>

@@ -12,24 +12,71 @@ export function useTimeEntries() {
   useEffect(() => {
     const day = dayForTimeEntries ?? new Date()
     const isCacheInvalid = !timeEntries || !isDaysEqual(timeEntries.day, day)
-    if (isCacheInvalid && !isLoading) {
-      setIsLoading(true);
-      redmineService
-        .getTimeEntries("me", day, apiKey!)
-        .then((value) => ({
-          value,
-          day
-        }))
-        .then((timeEntries) => {
-          setAppState(appState => ({
-            ...appState,
-            timeEntries
-          }));
-        })
-        .catch()
-        .then(() => setIsLoading(false));
+    let canceled = false
+    if (!isCacheInvalid || isLoading) {
+      return
     }
-  }, [isLoading, setAppState, redmineService, timeEntries, apiKey, dayForTimeEntries]);
+    console.log("Loading time entries...");
+    setIsLoading(true);
+    redmineService
+      .getTimeEntries("me", day, apiKey!)
+      .then((value) => ({
+        value,
+        day,
+      }))
+      .then((timeEntries) => {
+        if (canceled) {
+          return Promise.reject(new Error("Cancelled"))
+        }
+        // Save intermediate state (overview)
+        setAppState((appState) => ({
+          ...appState,
+          timeEntries,
+        }));
+      })
+      //   // And start loading details (issues)
+      //   const issueIds = timeEntries.value.map((te) => te.issue.id);
+      //   return redmineService
+      //     .getIssuesByIds(issueIds, apiKey!)
+      //     .then((issuesList) => {
+      //       let timeEntriesWithIssues = [...timeEntries.value];
+      //       issuesList.issues.forEach((issue) => {
+      //         timeEntriesWithIssues = timeEntriesWithIssues.map(te => {
+      //           if (te.issue.id == issue.id) {
+      //             te.issue = issue
+      //           }
+      //           return te
+      //         })
+      //       });
+      //       return timeEntriesWithIssues;
+      //     });
+      // })
+      // .then((issuesWithDetails) => {
+      //   if (canceled) {
+      //     return Promise.reject(new Error('Cancelled'))
+      //   }
+      //   // Save issues with details
+      //   setAppState((appState) => ({
+      //     ...appState,
+      //     timeEntries: {
+      //       day,
+      //       value: issuesWithDetails,
+      //     },
+      //   }));
+      // })
+      .catch((err) => {
+        console.log(err)
+        return Promise.resolve()
+      })
+      .then(() => {
+        if (!canceled) {
+          setIsLoading(false);
+        }
+      });
+    return () => {
+      canceled = true
+    }
+  }, [setAppState, redmineService, apiKey, dayForTimeEntries]);
   return timeEntries?.value ?? []
 }
 

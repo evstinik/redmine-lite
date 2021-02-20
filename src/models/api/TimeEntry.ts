@@ -1,3 +1,5 @@
+import { Issue as DetailedIssue } from './Issue'
+
 export interface Project {
   id: number;
   name: string;
@@ -28,6 +30,10 @@ export interface TimeEntry {
   spent_on: string;
   created_on: string;
   updated_on: string;
+}
+
+export interface DetailedTimeEntry extends TimeEntry {
+  issue: Issue & Partial<DetailedIssue>
 }
 
 export interface TimeEntriesResponse {

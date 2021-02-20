@@ -1,19 +1,19 @@
 import { User } from "./api/User"
-import { TimeEntry } from "./api/TimeEntry"
+import { DetailedTimeEntry } from "./api/TimeEntry";
 import { TimeEntryActivity } from "./api/TimeEntryActivity"
 import { Project } from "./api/Project"
 
 export interface AppState {
   timeEntries?: {
-    value: TimeEntry[]
-    day: Date
-  }
-  dayForTimeEntries?: Date
-  projects?: Project[]
-  apiKey?: string
-  user?: User
-  activities?: TimeEntryActivity[]
-  primaryActivityId?: number
+    value: DetailedTimeEntry[];
+    day: Date;
+  };
+  dayForTimeEntries?: Date;
+  projects?: Project[];
+  apiKey?: string;
+  user?: User;
+  activities?: TimeEntryActivity[];
+  primaryActivityId?: number;
 }
 
 export abstract class AppState {

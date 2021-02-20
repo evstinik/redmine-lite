@@ -1,17 +1,18 @@
 import * as React from 'react'
-import { useOnChange } from '../hooks/utils'
-import { useAddTimeEntry, useTimeEntryActivities, usePrimaryTimeEntryActivity, useDayForTimeEntries, useFormattedDayForTimeEntries } from '../hooks/timeEntries'
-import { UnprocessableEntityError } from '../models/RedmineService'
-import { convertToString } from '../models/RelativeDateFormatter'
+import { useOnChange } from 'hooks/utils'
+import { useAddTimeEntry, useTimeEntryActivities, usePrimaryTimeEntryActivity, useDayForTimeEntries, useFormattedDayForTimeEntries } from 'hooks/timeEntries'
+import { UnprocessableEntityError } from 'models/RedmineService'
+import { convertToString } from 'models/RelativeDateFormatter'
 import './TimeEntryForm.css'
-import { capitalize } from '../models/String'
+import { capitalize } from 'models/String'
 
 interface TimeEntryFormProps {
-  preselectedIssueId?: number
+  preselectedIssueId?: number;
+  onResetSelectedIssue: () => void
 }
 
 export function TimeEntryForm(props: TimeEntryFormProps) {
-  const { preselectedIssueId } = props
+  const { preselectedIssueId, onResetSelectedIssue } = props
 
   const activities = useTimeEntryActivities()
   const primaryActivityId = usePrimaryTimeEntryActivity()
@@ -22,6 +23,11 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
   const [activity, setActivity] = React.useState(primaryActivityId)
   const [comment, setComment] = React.useState('')
   const [errors, setErrors] = React.useState<string[]>([])
+
+  const onChangeIssue = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    onResetSelectedIssue()
+    setIssue(event.target.value)
+  }, [])
 
   const dayForTimeEntries = useDayForTimeEntries()
   const formattedDay = capitalize(useFormattedDayForTimeEntries())
@@ -40,6 +46,7 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
     setActivity(primaryActivityId)
     setComment('')
     setErrors([])
+    onResetSelectedIssue()
   }, [setIssue, setSpent, setComment, primaryActivityId])
 
   const submit = React.useCallback((event) => {
@@ -88,7 +95,7 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
               type="text"
               className="issue"
               value={issue}
-              onChange={useOnChange(setIssue)}
+              onChange={onChangeIssue}
               required
             />
           </label>
@@ -126,7 +133,10 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
           <li key={`${idx}-error`}>{error}</li>
         ))}
       </ul>
-      <p className="tip">You can find issue by subject in neighbour section. Also you can click on issue number to copy id into this form</p>
+      <p className="tip">
+        You can find issue by subject in neighbour section. Also you can click
+        on issue number to copy id into this form
+      </p>
     </div>
   );
 }
