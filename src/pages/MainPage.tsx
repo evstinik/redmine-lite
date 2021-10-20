@@ -9,6 +9,7 @@ import {
 } from "components";
 
 import './MainPage.css'
+import { FavouriteEntries } from 'components/TimeEntries/FavouriteEntries';
 
 export function MainPage() {
   const [selectedIssue, setSelectedIssue] = React.useState<Issue | null>(null);

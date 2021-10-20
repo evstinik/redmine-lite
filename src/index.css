@@ -82,6 +82,20 @@ button.bordered, input[type='submit'].bordered {
   color: var(--action-fg-color);
 }
 
+button.icon-plain, input[type='submit'].icon-plain {
+  background-color: transparent;
+  border: none;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+}
+
+button.icon-plain > svg, input[type='submit'].icon-plain > svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--action-fg-color);
+}
+
 button:active, input[type='submit']:active {
   filter: invert(25%);
   outline: 0;

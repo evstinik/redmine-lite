@@ -1,5 +1,5 @@
 import { User } from "./api/User"
-import { DetailedTimeEntry } from "./api/TimeEntry";
+import { DetailedTimeEntry, TimeEntry } from "./api/TimeEntry";
 import { TimeEntryActivity } from "./api/TimeEntryActivity"
 import { Project } from "./api/Project"
 
@@ -14,6 +14,7 @@ export interface AppState {
   user?: User;
   activities?: TimeEntryActivity[];
   primaryActivityId?: number;
+  favouries?: TimeEntry[];
 }
 
 export abstract class AppState {
@@ -30,7 +31,7 @@ export abstract class AppState {
     }
   }
 
-  static store({ apiKey, primaryActivityId, activities }: AppState) {
+  static store({ apiKey, primaryActivityId, activities, favouries }: AppState) {
     localStorage.setItem(
       "RedmineLite",
       JSON.stringify({ apiKey, primaryActivityId, activities })

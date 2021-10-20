@@ -37,3 +37,9 @@
 .time-entry-row .activity {
   color: var(--dark-secondary-fg-color);
 }
+
+.time-entry-row .actions {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}

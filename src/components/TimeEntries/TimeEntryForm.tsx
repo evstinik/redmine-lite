@@ -5,6 +5,8 @@ import { UnprocessableEntityError } from 'models/RedmineService'
 import { convertToString } from 'models/RelativeDateFormatter'
 import './TimeEntryForm.css'
 import { capitalize } from 'models/String'
+import { FavouriteEntries } from './FavouriteEntries'
+import { TimeEntry } from 'models/api/TimeEntry'
 
 interface TimeEntryFormProps {
   preselectedIssueId?: number;
@@ -72,71 +74,82 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
       });
   }, [addTimeEntry, activity, comment, spent, issue, dayForTimeEntries, reset])
 
+  const prefillWithEntry = React.useCallback((timeEntry: TimeEntry) => {
+    setSpent(`${timeEntry.hours}`)
+    setIssue(timeEntry.issue.id)
+    setActivity(timeEntry.activity.id)
+    setComment(timeEntry.comments)
+  }, [])
+
   return (
-    <div className="time-entry-form">
-      <h2>Add new time entry</h2>
-      <form onSubmit={submit}>
-        <fieldset disabled={isCreating}>
-          <label>
-            {formattedDay} I spent{" "}
-            <input
-              type="text"
-              className="hours"
-              value={spent}
-              onChange={useOnChange(setSpent)}
-              required
-            />
-            h
-          </label>
-          <label>
-            {" "}
-            on issue #
-            <input
-              type="text"
-              className="issue"
-              value={issue}
-              onChange={onChangeIssue}
-              required
-            />
-          </label>
-          <label>
-            {" "}
-            while doing{" "}
-            <select
-              value={activity}
-              onChange={useOnChange(setActivity)}
-              required
-            >
-              {activities.map((activity) => (
-                <option key={activity.id} value={activity.id}>
-                  {activity.name}
-                </option>
-              ))}
-            </select>
-            ,
-          </label>
-          <label>
-            {" "}
-            specifically doing{" "}
-            <input
-              type="text"
-              className="comment"
-              value={comment}
-              onChange={useOnChange(setComment)}
-            />
-          </label>
-          <input type="submit" className="contained" value="Add" />
-        </fieldset>
-      </form>
-      <ul className="errors">
-        {errors.map((error, idx) => (
-          <li key={`${idx}-error`}>{error}</li>
-        ))}
-      </ul>
-      <p className="tip">
-        You can find issue by subject in neighbour section. Also you can click
-        on issue number to copy id into this form
-      </p>
-    </div>
+    <>
+      <div className="time-entry-form">
+        <h2>Add new time entry</h2>
+        <form onSubmit={submit}>
+          <fieldset disabled={isCreating}>
+            <label>
+              {formattedDay} I spent{" "}
+              <input
+                type="text"
+                className="hours"
+                value={spent}
+                onChange={useOnChange(setSpent)}
+                required
+              />
+              h
+            </label>
+            <label>
+              {" "}
+              on issue #
+              <input
+                type="text"
+                className="issue"
+                value={issue}
+                onChange={onChangeIssue}
+                required
+              />
+            </label>
+            <label>
+              {" "}
+              while doing{" "}
+              <select
+                value={activity}
+                onChange={useOnChange(setActivity)}
+                required
+              >
+                {activities.map((activity) => (
+                  <option key={activity.id} value={activity.id}>
+                    {activity.name}
+                  </option>
+                ))}
+              </select>
+              ,
+            </label>
+            <label>
+              {" "}
+              specifically doing{" "}
+              <input
+                type="text"
+                className="comment"
+                value={comment}
+                onChange={useOnChange(setComment)}
+              />
+            </label>
+            <input type="submit" className="contained" value="Add" />
+          </fieldset>
+        </form>
+        <ul className="errors">
+          {errors.map((error, idx) => (
+            <li key={`${idx}-error`}>{error}</li>
+          ))}
+        </ul>
+        <p className="tip">
+          You can find issue by subject in neighbour section. Also you can click
+          on issue number to copy id into this form
+        </p>
+      </div>
+      
+      <FavouriteEntries onEntryClicked={prefillWithEntry} />
+    </>
   );
 }

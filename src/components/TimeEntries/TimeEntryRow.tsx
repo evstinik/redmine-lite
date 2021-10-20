@@ -3,6 +3,9 @@ import { DetailedTimeEntry } from "models/api/TimeEntry";
 import { useDeleteTimeEntry } from 'hooks/timeEntries';
 import './TimeEntryRow.css'
 import { RedmineLink } from 'components/RedmineLink/RedmineLink';
+import { IconButton } from 'components/IconButton';
+import { IconBin, IconStar } from 'components';
+import { useFavourites } from 'hooks/favourites';
 
 interface TimeEntryRowProps {
   timeEntry: DetailedTimeEntry
@@ -34,6 +37,12 @@ export function TimeEntryRow({ timeEntry }: TimeEntryRowProps) {
     return () => { isCancelled = true }
   }, [deleteTimeEntry, timeEntry, setIsDeleting]);
 
+  const { favouriteEntries, toggleFavouriteEntry } = useFavourites()
+  const toggleFavourite = React.useCallback(() => {
+    toggleFavouriteEntry(timeEntry)
+  }, [timeEntry, favouriteEntries])
+  const isFavourite = React.useMemo(() => !!(favouriteEntries?.find((e) => e.id === timeEntry.id)), [timeEntry, favouriteEntries])
+
   return (
     <li className="time-entry-row">
       <div className="line">
@@ -54,13 +63,8 @@ export function TimeEntryRow({ timeEntry }: TimeEntryRowProps) {
           {timeEntry.comments}
         </p>
         <div className="actions">
-          <button
-            className="bordered"
-            disabled={isDeleting}
-            onClick={deleteWithConfirmation}
-          >
-            Delete
-          </button>
+          <IconButton icon={<IconStar filled={isFavourite} />} onClick={toggleFavourite} />
+          <IconButton icon={<IconBin />} disabled={isDeleting} onClick={deleteWithConfirmation} />
         </div>
       </div>
     </li>
