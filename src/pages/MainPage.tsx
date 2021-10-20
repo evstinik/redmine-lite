@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Issue } from '../models/api/Issue';
-import './MainPage.css'
 import {
   TimeEntries,
   Greetings,
@@ -8,6 +7,8 @@ import {
   IssuesSearch,
   TimeEntriesImport
 } from "components";
+
+import './MainPage.css'
 
 export function MainPage() {
   const [selectedIssue, setSelectedIssue] = React.useState<Issue | null>(null);
@@ -18,16 +19,16 @@ export function MainPage() {
   return (
     <div className="page">
       <Greetings />
-      <div className="content">
-        <div>
+      <div className="page__content">
+        <div className="page__content__panel">
           <TimeEntries />
           <TimeEntryForm
             preselectedIssueId={selectedIssue?.id}
             onResetSelectedIssue={resetSelectedIssues}
           />
-          <TimeEntriesImport />
+          {/* <TimeEntriesImport /> */}
         </div>
-        <div>
+        <div className="page__content__panel">
           <IssuesSearch onSelect={setSelectedIssue} />
         </div>
       </div>
