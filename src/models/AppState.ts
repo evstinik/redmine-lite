@@ -1,20 +1,20 @@
-import { User } from "./api/User"
-import { DetailedTimeEntry, TimeEntry } from "./api/TimeEntry";
-import { TimeEntryActivity } from "./api/TimeEntryActivity"
-import { Project } from "./api/Project"
+import { User } from './api/User'
+import { DetailedTimeEntry, TimeEntry } from './api/TimeEntry'
+import { TimeEntryActivity } from './api/TimeEntryActivity'
+import { Project } from './api/Project'
 
 export interface AppState {
   timeEntries?: {
-    value: DetailedTimeEntry[];
-    day: Date;
-  };
-  dayForTimeEntries?: Date;
-  projects?: Project[];
-  apiKey?: string;
-  user?: User;
-  activities?: TimeEntryActivity[];
-  primaryActivityId?: number;
-  favouries?: TimeEntry[];
+    value: DetailedTimeEntry[]
+    day: Date
+  }
+  dayForTimeEntries?: Date
+  projects?: Project[]
+  apiKey?: string
+  user?: User
+  activities?: TimeEntryActivity[]
+  primaryActivityId?: number
+  favouries?: TimeEntry[]
 }
 
 export abstract class AppState {
@@ -27,14 +27,14 @@ export abstract class AppState {
     const loadedState = stateAsStr ? JSON.parse(stateAsStr) : {}
     return {
       ...AppState.empty(),
-      ...loadedState
+      ...loadedState,
     }
   }
 
   static store({ apiKey, primaryActivityId, activities, favouries }: AppState) {
     localStorage.setItem(
-      "RedmineLite",
-      JSON.stringify({ apiKey, primaryActivityId, activities })
-    );
+      'RedmineLite',
+      JSON.stringify({ apiKey, primaryActivityId, activities, favouries })
+    )
   }
 }
