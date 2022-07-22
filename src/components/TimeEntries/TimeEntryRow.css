@@ -8,6 +8,10 @@
   align-items: center;
 }
 
+.time-entry-row > .line > .issue {
+  flex: 1 1 0%;
+}
+
 .time-entry-row > .line:not(:first-child) {
   margin-top: 12px;
 }

@@ -34,7 +34,7 @@ export abstract class AppState {
   static store({ apiKey, primaryActivityId, activities, favouries }: AppState) {
     localStorage.setItem(
       'RedmineLite',
-      JSON.stringify({ apiKey, primaryActivityId, activities, favouries })
+      JSON.stringify({ apiKey, primaryActivityId, activities, favouries }),
     )
   }
 }
