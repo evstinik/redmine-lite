@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { DetailedTimeEntry } from 'models/api/TimeEntry'
-import { useDeleteTimeEntry } from 'hooks/timeEntries'
+import { useDeleteTimeEntry, useUpdateTimeEntry } from 'hooks/timeEntries'
 import { RedmineLink } from 'components/RedmineLink/RedmineLink'
 import { IconButton } from 'components/IconButton'
 import { IconBin, IconStar } from 'components'
@@ -46,10 +46,43 @@ export function TimeEntryRow({ timeEntry, issueName }: TimeEntryRowProps) {
     [timeEntry, favouriteEntries],
   )
 
+  const updateTimeEntry = useUpdateTimeEntry()
+  const [isEditingHours, setEditingHours] = React.useState(false)
+  const [hours, setHours] = React.useState('')
+  React.useEffect(() => {
+    setHours(`${timeEntry.hours}`)
+  }, [timeEntry.hours])
+  const saveNewHours = React.useCallback(() => {
+    updateTimeEntry(timeEntry.id, {
+      ...timeEntry,
+      issue_id: timeEntry.issue.id,
+      activity_id: timeEntry.activity.id,
+      hours: Number(hours),
+    })
+    setEditingHours(false)
+    setHours(`${timeEntry.hours}`)
+  }, [timeEntry, hours])
+
   return (
     <li className='time-entry-row'>
       <div className='line'>
-        <span className='hours'>{timeEntry.hours}h</span>
+        <span
+          className='hours'
+          onClick={() => {
+            setEditingHours(true)
+          }}
+        >
+          {isEditingHours && (
+            <input
+              type='text'
+              value={hours}
+              onChange={({ target }) => setHours(target.value)}
+              autoFocus
+              onBlur={saveNewHours}
+            />
+          )}
+          {!isEditingHours && <>{timeEntry.hours}h</>}
+        </span>
         <RedmineLink to={`/issues/${timeEntry.issue.id}`} className='issue'>
           {timeEntry.issue.subject && (
             <>

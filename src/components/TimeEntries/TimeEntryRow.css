@@ -47,3 +47,7 @@
   flex-direction: row;
   gap: 8px;
 }
+
+.time-entry-row .hours input {
+  width: 30px;
+}

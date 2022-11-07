@@ -1,9 +1,15 @@
 import { User, UsersResponse } from './api/User'
-import { TimeEntry, TimeEntriesResponse, CreateTimeEntryResponse } from './api/TimeEntry'
+import {
+  TimeEntry,
+  TimeEntriesResponse,
+  CreateTimeEntryResponse,
+  UpdateTimeEntryResponse,
+} from './api/TimeEntry'
 import { CreateTimeEntry } from './api/CreateTimeEntry'
 import { TimeEntryActivity, TimeEntryActivityResponse } from './api/TimeEntryActivity'
 import { Issue, IssueDetailResponse, IssuesPaginatedList } from './api/Issue'
 import { ProjectPaginatedList } from './api/Project'
+import { UpdateTimeEntry } from './api/UpdateTimeEntry'
 
 const API_URL = process.env.REACT_APP_API_URL ?? ''
 
@@ -62,6 +68,21 @@ export class RedmineService {
       },
     })
     return time_entry
+  }
+
+  public async updateTimeEntry(
+    id: number,
+    timeEntry: UpdateTimeEntry,
+    apiKey: string,
+  ): Promise<void> {
+    await this.request<UpdateTimeEntryResponse>(`/time_entries/${id}`, {
+      apiKey,
+      method: 'PUT',
+      body: {
+        time_entry: timeEntry,
+      },
+      emptyResponse: true,
+    })
   }
 
   public async deleteTimeEntry(id: number, apiKey: string): Promise<void> {
