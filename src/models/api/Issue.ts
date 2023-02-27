@@ -40,6 +40,9 @@ export interface Issue {
   custom_fields: CustomField[]
   created_on: string
   updated_on: string
+  parent?: {
+    id: number
+  }
 }
 
 export interface IssuesPaginatedList extends PaginatedList {
