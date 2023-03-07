@@ -298,9 +298,9 @@ const exportSum = async (
           ).sort((a, b) => a - b)
 
           csvRows.push(
-            `${issue.id};${issue.subject};${userName};${Number(sum).toFixed(2)};${issueIds
-              .map((id) => `#${id}`)
-              .join(', ')}`,
+            `${issue.id};${issue.subject};${userName};${Number(sum)
+              .toFixed(2)
+              .replace('.', ',')};${issueIds.map((id) => `#${id}`).join(', ')}`,
           )
         })
     })
