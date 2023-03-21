@@ -184,8 +184,13 @@ const groupEntriesByUserStory = (
       storyEntries.push(entry)
       groupedEntries[issue.id] = storyEntries
     } else {
-      // console.debug(`Time entry does not lead to any user story (issue #${entry.issue.id} - ${issuesPerId.get(entry.issue.id)?.subject ?? 'N/A'})`)
+      // This entry refers to issue, that does not lead to user story
+      // Earlier we just registered it...
       problematicIssues.notLeadingToUserStory.add(entry.issue.id)
+      // ...now we place it under it's own name
+      const storyEntries = groupedEntries[entry.issue.id] ?? []
+      storyEntries.push(entry)
+      groupedEntries[entry.issue.id] = storyEntries
     }
   })
 
@@ -207,6 +212,7 @@ const groupEntriesByUserStory = (
         const issue = issuesPerId.get(id)
         console.warn(`  #${id} - ${issue?.tracker.name ?? 'N/A'} - ${issue?.subject ?? 'N/A'}`)
       })
+    console.warn("You will se all of them under it's own name")
   }
 
   return groupedEntries
@@ -277,7 +283,7 @@ const exportSum = async (
   filename: string,
 ) => {
   const issuesPerId = new Map<number, Issue>(issueDetails.issues.map((i: Issue) => [i.id, i]))
-  const csvRows: string[] = ['User story ID;User story subject;User;Hours;Subtasks']
+  const csvRows: string[] = ['User story ID;User story subject;User;Hours;Subtasks;Comment']
 
   Object.keys(groupedEntries)
     .map(Number)
@@ -297,10 +303,12 @@ const exportSum = async (
             new Set(groupedEntries[storyId][userName].map((e) => e.issue.id)),
           ).sort((a, b) => a - b)
 
+          const comment = issue.tracker.name !== 'User Story' ? `${issue.tracker.name}` : ''
+
           csvRows.push(
             `${issue.id};${issue.subject};${userName};${Number(sum)
               .toFixed(2)
-              .replace('.', ',')};${issueIds.map((id) => `#${id}`).join(', ')}`,
+              .replace('.', ',')};${issueIds.map((id) => `#${id}`).join(', ')};${comment}`,
           )
         })
     })
