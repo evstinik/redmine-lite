@@ -1,31 +1,31 @@
-import { useAppState } from "./appState";
-import { useEffect, useCallback, Dispatch, SetStateAction } from "react";
-import { useRedmineService } from "./redmineService";
-import { AppState } from "../models/AppState";
+import { useAppState } from './appState'
+import { useEffect, useCallback, Dispatch, SetStateAction } from 'react'
+import { useRedmineService } from './redmineService'
+import { AppState } from '../models/AppState'
 
 export function useUser() {
-  const [{ user, apiKey }, setAppState] = useAppState();
-  const redmineService = useRedmineService();
+  const [{ user, apiKey }, setAppState] = useAppState()
+  const redmineService = useRedmineService()
   useEffect(() => {
-    let isLatest = true;
+    let isLatest = true
     if (!user) {
       redmineService
-        .getUser("current", apiKey!)
+        .getUser('current', apiKey!)
         .then((user) => {
           if (isLatest) {
-            setAppState(appState => ({
+            setAppState((appState) => ({
               ...appState,
-              user,
-            }));
+              user
+            }))
           }
         })
-        .catch();
+        .catch()
     }
     return () => {
-      isLatest = false;
-    };
-  }, [setAppState, redmineService, user, apiKey]);
-  return user;
+      isLatest = false
+    }
+  }, [setAppState, redmineService, user, apiKey])
+  return user
 }
 
 export function useLogout(setAppState: Dispatch<SetStateAction<AppState>>) {
@@ -35,7 +35,7 @@ export function useLogout(setAppState: Dispatch<SetStateAction<AppState>>) {
       apiKey: undefined,
       activities: undefined,
       primaryActivityId: undefined,
-      user: undefined,
-    }));
-  }, [setAppState]);
+      user: undefined
+    }))
+  }, [setAppState])
 }

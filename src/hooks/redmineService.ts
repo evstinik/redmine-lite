@@ -1,5 +1,5 @@
-import { createContext, useContext } from "react";
-import { RedmineService } from "../models/RedmineService";
+import { createContext, useContext } from 'react'
+import { RedmineService } from '../models/RedmineService'
 
 export const RedmineServiceContext = createContext(new RedmineService())
 

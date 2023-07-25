@@ -1,25 +1,25 @@
-import { useAppState } from "./appState";
-import { useEffect, useState } from "react";
-import { useRedmineService } from "./redmineService";
+import { useAppState } from './appState'
+import { useEffect, useState } from 'react'
+import { useRedmineService } from './redmineService'
 
 export function useProjects() {
-  const [{ apiKey, projects }, setAppState] = useAppState();
+  const [{ apiKey, projects }, setAppState] = useAppState()
   const [isLoading, setIsLoading] = useState(false)
-  const redmineService = useRedmineService();
+  const redmineService = useRedmineService()
   useEffect(() => {
     if (!projects && !isLoading) {
       setIsLoading(true)
       redmineService
         .getProjects(0, 100, apiKey!)
         .then(({ projects }) => {
-          setAppState(appState => ({
+          setAppState((appState) => ({
             ...appState,
-            projects,
-          }));
+            projects
+          }))
         })
         .catch()
         .then(() => setIsLoading(false))
     }
-  }, [setAppState, redmineService, isLoading, projects, apiKey]);
+  }, [setAppState, redmineService, isLoading, projects, apiKey])
   return projects
 }

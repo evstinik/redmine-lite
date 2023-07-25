@@ -11,19 +11,19 @@ export function UserPreferences(props: React.HTMLAttributes<HTMLDivElement>) {
   const logout = useLogout(setAppState)
   const activities = useTimeEntryActivities()
 
-  const changePrimaryActivity = React.useCallback((primaryActivityId: number) => {
-    setAppState((appState) => ({ ...appState, primaryActivityId }))
-  }, [setAppState])
+  const changePrimaryActivity = React.useCallback(
+    (primaryActivityId: number) => {
+      setAppState((appState) => ({ ...appState, primaryActivityId }))
+    },
+    [setAppState]
+  )
 
   return (
     <div {...props}>
       <h2>User preferences</h2>
       <label>
         Your primary activity
-        <select
-          value={primaryActivityId}
-          onChange={useOnChange(changePrimaryActivity)}
-        >
+        <select value={primaryActivityId} onChange={useOnChange(changePrimaryActivity)}>
           {activities.map((activity) => (
             <option key={activity.id} value={activity.id}>
               {activity.name}
@@ -31,7 +31,9 @@ export function UserPreferences(props: React.HTMLAttributes<HTMLDivElement>) {
           ))}
         </select>
       </label>
-      <button className='contained logout' onClick={logout}>Logout</button>
+      <button className='contained logout' onClick={logout}>
+        Logout
+      </button>
     </div>
-  );
+  )
 }

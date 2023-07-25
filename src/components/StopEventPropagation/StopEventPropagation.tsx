@@ -1,8 +1,9 @@
 import * as React from 'react'
 
-export const StopEventPropagation: React.FC<
-  React.HTMLAttributes<HTMLDivElement>
-> = ({ children, ...other }) => (
+export const StopEventPropagation: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
+  children,
+  ...other
+}) => (
   <div
     {...other}
     onClick={(event) => {

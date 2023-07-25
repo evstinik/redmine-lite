@@ -1,6 +1,12 @@
 import * as React from 'react'
 import { useOnChange } from 'hooks/utils'
-import { useAddTimeEntry, useTimeEntryActivities, usePrimaryTimeEntryActivity, useDayForTimeEntries, useFormattedDayForTimeEntries } from 'hooks/timeEntries'
+import {
+  useAddTimeEntry,
+  useTimeEntryActivities,
+  usePrimaryTimeEntryActivity,
+  useDayForTimeEntries,
+  useFormattedDayForTimeEntries
+} from 'hooks/timeEntries'
 import { UnprocessableEntityError } from 'models/RedmineService'
 import { convertToString } from 'models/RelativeDateFormatter'
 import './TimeEntryForm.css'
@@ -9,7 +15,7 @@ import { FavouriteEntries } from './FavouriteEntries'
 import { TimeEntry } from 'models/api/TimeEntry'
 
 interface TimeEntryFormProps {
-  preselectedIssueId?: number;
+  preselectedIssueId?: number
   onResetSelectedIssue: () => void
 }
 
@@ -36,7 +42,7 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
 
   React.useEffect(() => {
     if (preselectedIssueId) {
-      setIssue(preselectedIssueId);
+      setIssue(preselectedIssueId)
     }
   }, [preselectedIssueId])
 
@@ -51,28 +57,31 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
     onResetSelectedIssue()
   }, [setIssue, setSpent, setComment, primaryActivityId])
 
-  const submit = React.useCallback((event) => {
-    event.preventDefault() 
-    setIsCreating(true)
-    addTimeEntry({
-      activity_id: Number(activity),
-      comments: comment,
-      hours: Number(spent),
-      issue_id: Number(issue),
-      spent_on: dayForTimeEntries && convertToString(dayForTimeEntries),
-    })
-      .then(reset)
-      .catch((error) => {
-        if (error instanceof UnprocessableEntityError) {
-          setErrors(error.errors);
-        } else {
-          setErrors([error.toString()]);
-        }
+  const submit = React.useCallback(
+    (event) => {
+      event.preventDefault()
+      setIsCreating(true)
+      addTimeEntry({
+        activity_id: Number(activity),
+        comments: comment,
+        hours: Number(spent),
+        issue_id: Number(issue),
+        spent_on: dayForTimeEntries && convertToString(dayForTimeEntries)
       })
-      .then(() => {
-        setIsCreating(false);
-      });
-  }, [addTimeEntry, activity, comment, spent, issue, dayForTimeEntries, reset])
+        .then(reset)
+        .catch((error) => {
+          if (error instanceof UnprocessableEntityError) {
+            setErrors(error.errors)
+          } else {
+            setErrors([error.toString()])
+          }
+        })
+        .then(() => {
+          setIsCreating(false)
+        })
+    },
+    [addTimeEntry, activity, comment, spent, issue, dayForTimeEntries, reset]
+  )
 
   const prefillWithEntry = React.useCallback((timeEntry: TimeEntry) => {
     setSpent(`${timeEntry.hours}`)
@@ -83,15 +92,15 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
 
   return (
     <>
-      <div className="time-entry-form">
+      <div className='time-entry-form'>
         <h2>Add new time entry</h2>
         <form onSubmit={submit}>
           <fieldset disabled={isCreating}>
             <label>
-              {formattedDay} I spent{" "}
+              {formattedDay} I spent{' '}
               <input
-                type="text"
-                className="hours"
+                type='text'
+                className='hours'
                 value={spent}
                 onChange={useOnChange(setSpent)}
                 required
@@ -99,24 +108,20 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
               h
             </label>
             <label>
-              {" "}
+              {' '}
               on issue #
               <input
-                type="text"
-                className="issue"
+                type='text'
+                className='issue'
                 value={issue}
                 onChange={onChangeIssue}
                 required
               />
             </label>
             <label>
-              {" "}
-              while doing{" "}
-              <select
-                value={activity}
-                onChange={useOnChange(setActivity)}
-                required
-              >
+              {' '}
+              while doing{' '}
+              <select value={activity} onChange={useOnChange(setActivity)} required>
                 {activities.map((activity) => (
                   <option key={activity.id} value={activity.id}>
                     {activity.name}
@@ -126,30 +131,30 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
               ,
             </label>
             <label>
-              {" "}
-              specifically doing{" "}
+              {' '}
+              specifically doing{' '}
               <input
-                type="text"
-                className="comment"
+                type='text'
+                className='comment'
                 value={comment}
                 onChange={useOnChange(setComment)}
               />
             </label>
-            <input type="submit" className="contained" value="Add" />
+            <input type='submit' className='contained' value='Add' />
           </fieldset>
         </form>
-        <ul className="errors">
+        <ul className='errors'>
           {errors.map((error, idx) => (
             <li key={`${idx}-error`}>{error}</li>
           ))}
         </ul>
-        <p className="tip">
-          You can find issue by subject in neighbour section. Also you can click
-          on issue number to copy id into this form
+        <p className='tip'>
+          You can find issue by subject in neighbour section. Also you can click on issue number to
+          copy id into this form
         </p>
       </div>
-      
+
       <FavouriteEntries onEntryClicked={prefillWithEntry} />
     </>
-  );
+  )
 }

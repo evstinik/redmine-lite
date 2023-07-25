@@ -3,7 +3,7 @@ import {
   TimeEntry,
   TimeEntriesResponse,
   CreateTimeEntryResponse,
-  UpdateTimeEntryResponse,
+  UpdateTimeEntryResponse
 } from './api/TimeEntry'
 import { CreateTimeEntry } from './api/CreateTimeEntry'
 import { TimeEntryActivity, TimeEntryActivityResponse } from './api/TimeEntryActivity'
@@ -44,17 +44,17 @@ export class RedmineService {
   public async getTimeEntries(
     userId: string = 'me',
     day: Date = new Date(),
-    apiKey: string,
+    apiKey: string
   ): Promise<TimeEntry[]> {
     const queryParams = {
       from: day.toJSON().slice(0, 10),
       to: day.toJSON().slice(0, 10),
       limit: 100,
-      user_id: userId,
+      user_id: userId
     }
     const { time_entries } = await this.request<TimeEntriesResponse>('/time_entries', {
       queryParams,
-      apiKey,
+      apiKey
     })
     return time_entries
   }
@@ -64,8 +64,8 @@ export class RedmineService {
       apiKey,
       method: 'POST',
       body: {
-        time_entry: timeEntry,
-      },
+        time_entry: timeEntry
+      }
     })
     return time_entry
   }
@@ -73,15 +73,15 @@ export class RedmineService {
   public async updateTimeEntry(
     id: number,
     timeEntry: UpdateTimeEntry,
-    apiKey: string,
+    apiKey: string
   ): Promise<void> {
     await this.request<UpdateTimeEntryResponse>(`/time_entries/${id}`, {
       apiKey,
       method: 'PUT',
       body: {
-        time_entry: timeEntry,
+        time_entry: timeEntry
       },
-      emptyResponse: true,
+      emptyResponse: true
     })
   }
 
@@ -89,7 +89,7 @@ export class RedmineService {
     return await this.request<void>(`/time_entries/${id}`, {
       apiKey,
       method: 'DELETE',
-      emptyResponse: true,
+      emptyResponse: true
     })
   }
 
@@ -97,11 +97,11 @@ export class RedmineService {
     offset: number = 0,
     limit: number = 10,
     searchParams: IssuesSearchParams | undefined = undefined,
-    apiKey: string,
+    apiKey: string
   ): Promise<IssuesPaginatedList> {
     let queryParams: { [name: string]: string | number } = {
       offset,
-      limit,
+      limit
     }
     if (searchParams?.query && searchParams?.query?.length > 0) {
       queryParams = {
@@ -109,7 +109,7 @@ export class RedmineService {
         'f[]': 'subject',
         'op[subject]': '~',
         'v[subject][]': searchParams.query,
-        sort: 'updated_on:desc',
+        sort: 'updated_on:desc'
       }
     }
     if (searchParams?.projectId && Number(searchParams?.projectId) > 0) {
@@ -125,31 +125,31 @@ export class RedmineService {
     return await Promise.all(
       ids.map(async (id) => {
         return await this.request<IssueDetailResponse>(`/issues/${id}`, { apiKey }).then(
-          (r) => r.issue,
+          (r) => r.issue
         )
-      }),
+      })
     )
   }
 
   public async getProjects(
     offset: number = 0,
     limit: number = 10,
-    apiKey: string,
+    apiKey: string
   ): Promise<ProjectPaginatedList> {
     let queryParams: { [name: string]: string | number } = {
       offset,
-      limit,
+      limit
     }
     return await this.request<ProjectPaginatedList>(`/projects`, {
       apiKey,
-      queryParams,
+      queryParams
     })
   }
 
   public async getTimeEntryActivities(apiKey: string): Promise<TimeEntryActivity[]> {
     const { time_entry_activities } = await this.request<TimeEntryActivityResponse>(
       '/enumerations/time_entry_activities',
-      { apiKey },
+      { apiKey }
     )
     return time_entry_activities
   }
@@ -167,13 +167,13 @@ export class RedmineService {
       method = 'GET',
       body,
       escapeParams = true,
-      emptyResponse = false,
-    }: RequestParams = {},
+      emptyResponse = false
+    }: RequestParams = {}
   ): Promise<T> {
     const makeUrlWithEscape = () => {
       const url = new URL(`${API_URL}${endpoint}.json`, window.location as any)
       Object.keys(queryParams).forEach((name) =>
-        url.searchParams.append(name, queryParams[name].toString()),
+        url.searchParams.append(name, queryParams[name].toString())
       )
       return url.toString()
     }
@@ -185,7 +185,7 @@ export class RedmineService {
     }
     const url = escapeParams ? makeUrlWithEscape() : makeUrlWithoutEscape()
     let headers: { [name: string]: string } = {
-      'X-Redmine-API-Key': apiKey,
+      'X-Redmine-API-Key': apiKey
     }
     if (body && method !== 'GET') {
       headers['Content-Type'] = 'application/json'
@@ -193,7 +193,7 @@ export class RedmineService {
     return fetch(url, {
       method,
       body: body && JSON.stringify(body),
-      headers,
+      headers
     })
       .then((r) => {
         if (r.status === 401) {

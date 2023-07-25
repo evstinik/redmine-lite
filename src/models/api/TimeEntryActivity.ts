@@ -1,87 +1,87 @@
 export interface TimeEntryActivity {
-  id: number;
-  name: string;
+  id: number
+  name: string
 }
 
 export interface TimeEntryActivityResponse {
-  time_entry_activities: TimeEntryActivity[];
+  time_entry_activities: TimeEntryActivity[]
 }
 
 export abstract class TimeEntryActivity {
   static default = [
     {
       id: 48,
-      name: "Administration",
+      name: 'Administration'
     },
     {
       id: 10,
-      name: "Analysis/Specification",
+      name: 'Analysis/Specification'
     },
     {
       id: 62,
-      name: "Call/Meeting",
+      name: 'Call/Meeting'
     },
     {
       id: 53,
-      name: "Controlling",
+      name: 'Controlling'
     },
     {
       id: 15,
-      name: "Deployment",
+      name: 'Deployment'
     },
     {
       id: 8,
-      name: "Design",
+      name: 'Design'
     },
     {
       id: 9,
-      name: "Development",
+      name: 'Development'
     },
     {
       id: 14,
-      name: "Documentation/Revision",
+      name: 'Documentation/Revision'
     },
     {
       id: 16,
-      name: "Hiring/HR_Management",
+      name: 'Hiring/HR_Management'
     },
     {
       id: 13,
-      name: "Maintenance",
+      name: 'Maintenance'
     },
     {
       id: 11,
-      name: "Management",
+      name: 'Management'
     },
     {
       id: 52,
-      name: "Marketing",
+      name: 'Marketing'
     },
     {
       id: 49,
-      name: "Other",
+      name: 'Other'
     },
     {
       id: 47,
-      name: "Sales",
+      name: 'Sales'
     },
     {
       id: 58,
-      name: "Self study",
+      name: 'Self study'
     },
     {
       id: 35,
-      name: "Support",
+      name: 'Support'
     },
     {
       id: 12,
-      name: "Testing",
+      name: 'Testing'
     },
     {
       id: 57,
-      name: "Travel",
-    },
-  ];
+      name: 'Travel'
+    }
+  ]
 
   static defaultPrimaryActivityId = 9
 }

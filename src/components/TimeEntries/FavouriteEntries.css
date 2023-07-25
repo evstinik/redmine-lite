@@ -15,7 +15,7 @@
   border-radius: 8px;
   box-sizing: border-box;
   max-width: 160px;
-  
+
   display: inline-grid;
   grid-template-columns: 1fr auto;
   align-items: center;
@@ -49,6 +49,7 @@
   color: var(--dark-secondary-fg-color);
 }
 
-.fav-entry__actions, .fav-entry__hours {
+.fav-entry__actions,
+.fav-entry__hours {
   justify-self: flex-end;
 }

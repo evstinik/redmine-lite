@@ -7,7 +7,7 @@ import { TimeEntriesResponse, TimeEntry } from '../src/models/api/TimeEntry'
 
 config({
   debug: true,
-  path: '.env.local',
+  path: '.env.local'
 })
 
 const redmineBaseUrl = process.env['REDMINE_URL'] ?? process.env['REACT_APP_REDMINE_URL']
@@ -24,7 +24,7 @@ const getAccessToken = async () => {
   const { accessToken } = await prompts({
     type: 'text',
     name: 'accessToken',
-    message: 'Enter your Redmine API access token:',
+    message: 'Enter your Redmine API access token:'
   })
   return accessToken
 }
@@ -37,7 +37,7 @@ const getProjectId = async () => {
   const { projectId } = await prompts({
     type: 'text',
     name: 'projectId',
-    message: 'Enter the project ID:',
+    message: 'Enter the project ID:'
   })
   return projectId
 }
@@ -47,7 +47,7 @@ const getFixedVersion = async (projectId: string, accessToken: string) => {
   // Load fixed versions from redmine API
   const getJSON = bent('json')
   const fixedVersions = await getJSON(
-    `${redmineBaseUrl}/projects/${projectId}/versions.json?key=${accessToken}`,
+    `${redmineBaseUrl}/projects/${projectId}/versions.json?key=${accessToken}`
   )
 
   const { fixedVersionId } = await prompts({
@@ -56,8 +56,8 @@ const getFixedVersion = async (projectId: string, accessToken: string) => {
     message: 'Select version:',
     choices: fixedVersions.versions.map((version: any) => ({
       title: version.name,
-      value: version.id,
-    })),
+      value: version.id
+    }))
   })
 
   return fixedVersionId
@@ -71,7 +71,7 @@ const getTimeSpan = async () => {
   const { timeSpan } = await prompts({
     type: 'text',
     name: 'timeSpan',
-    message: 'Enter the time span (e.g. 2021-01-01,2021-01-31):',
+    message: 'Enter the time span (e.g. 2021-01-01,2021-01-31):'
   })
   return timeSpan
 }
@@ -81,7 +81,7 @@ const loadEntries = async (
   accessToken: string,
   projectId: string,
   timeSpan?: string,
-  versionId?: string,
+  versionId?: string
 ): Promise<TimeEntriesResponse> => {
   console.log(`Loading time entries for project ${projectId}...`)
 
@@ -106,7 +106,7 @@ const loadEntries = async (
 
   while (timeEntries.total_count > timeEntries.time_entries.length) {
     console.log(
-      `Loading more time entries... (${timeEntries.time_entries.length}/${timeEntries.total_count})`,
+      `Loading more time entries... (${timeEntries.time_entries.length}/${timeEntries.total_count})`
     )
 
     const offset = timeEntries.time_entries.length
@@ -122,7 +122,7 @@ const loadEntries = async (
 // Load multiple issue details from Redmine
 const loadIssueDetails = async (
   accessToken: string,
-  projectId: number,
+  projectId: number
 ): Promise<IssuesPaginatedList> => {
   const getJSON = bent('json')
 
@@ -132,16 +132,16 @@ const loadIssueDetails = async (
   console.time('Loaded issues in')
 
   const issueDetails: IssuesPaginatedList = await getJSON(
-    `${redmineBaseUrl}/issues.json?key=${accessToken}&limit=100&project_id=${projectId}&status_id=*`,
+    `${redmineBaseUrl}/issues.json?key=${accessToken}&limit=100&project_id=${projectId}&status_id=*`
   )
 
   while (issueDetails.total_count > issueDetails.issues.length) {
     console.log(
-      `Loading more issue details... (${issueDetails.issues.length}/${issueDetails.total_count})`,
+      `Loading more issue details... (${issueDetails.issues.length}/${issueDetails.total_count})`
     )
     const offset = issueDetails.issues.length
     const moreIssueDetails = await getJSON(
-      `${redmineBaseUrl}/issues.json?key=${accessToken}&limit=100&offset=${offset}&project_id=${projectId}&status_id=*`,
+      `${redmineBaseUrl}/issues.json?key=${accessToken}&limit=100&offset=${offset}&project_id=${projectId}&status_id=*`
     )
     issueDetails.issues = issueDetails.issues.concat(moreIssueDetails.issues)
   }
@@ -156,14 +156,14 @@ const loadIssueDetails = async (
 // Group time entries by issue of type user story
 const groupEntriesByUserStory = (
   timeEntries: TimeEntriesResponse,
-  issueDetails: IssuesPaginatedList,
+  issueDetails: IssuesPaginatedList
 ) => {
   const issuesPerId = new Map<number, Issue>(issueDetails.issues.map((i) => [i.id, i]))
 
   const groupedEntries: { [storyId: number]: TimeEntry[] } = {}
   const problematicIssues = {
     detailNotAvailable: new Set<number>(),
-    notLeadingToUserStory: new Set<number>(),
+    notLeadingToUserStory: new Set<number>()
   }
 
   timeEntries.time_entries.forEach((entry: TimeEntry) => {
@@ -200,7 +200,7 @@ const groupEntriesByUserStory = (
       Array.from(problematicIssues.detailNotAvailable)
         .sort((a, b) => a - b)
         .map((id) => `#${id}`)
-        .join(', '),
+        .join(', ')
     )
   }
 
@@ -240,7 +240,7 @@ const printEntries = (timeEntries: TimeEntriesResponse) => {
 // Print sum spent time per user story per user
 const printSum = (
   groupedEntries: { [storyId: number]: { [name: string]: TimeEntry[] } },
-  issueDetails: IssuesPaginatedList,
+  issueDetails: IssuesPaginatedList
 ) => {
   const issuesPerId = new Map<number, Issue>(issueDetails.issues.map((i) => [i.id, i]))
   Object.keys(groupedEntries)
@@ -264,13 +264,13 @@ const printSum = (
           const sum = groupedEntries[storyId][userName].reduce((sum, entry) => sum + entry.hours, 0)
 
           const issueIds = Array.from(
-            new Set(groupedEntries[storyId][userName].map((e) => e.issue.id)),
+            new Set(groupedEntries[storyId][userName].map((e) => e.issue.id))
           ).sort((a, b) => a - b)
 
           console.log(
             `  ${userName}: ${Number(sum).toFixed(2)}h (${issueIds
               .map((id) => `#${id}`)
-              .join(', ')})`,
+              .join(', ')})`
           )
         })
     })
@@ -280,7 +280,7 @@ const printSum = (
 const exportSum = async (
   groupedEntries: { [storyId: number]: { [name: string]: TimeEntry[] } },
   issueDetails: IssuesPaginatedList,
-  filename: string,
+  filename: string
 ) => {
   const issuesPerId = new Map<number, Issue>(issueDetails.issues.map((i: Issue) => [i.id, i]))
   const csvRows: string[] = ['User story ID;User story subject;User;Hours;Subtasks;Comment']
@@ -300,7 +300,7 @@ const exportSum = async (
           const sum = groupedEntries[storyId][userName].reduce((sum, entry) => sum + entry.hours, 0)
 
           const issueIds = Array.from(
-            new Set(groupedEntries[storyId][userName].map((e) => e.issue.id)),
+            new Set(groupedEntries[storyId][userName].map((e) => e.issue.id))
           ).sort((a, b) => a - b)
 
           const comment = issue.tracker.name !== 'User Story' ? `${issue.tracker.name}` : ''
@@ -308,7 +308,7 @@ const exportSum = async (
           csvRows.push(
             `${issue.id};${issue.subject};${userName};${Number(sum)
               .toFixed(2)
-              .replace('.', ',')};${issueIds.map((id) => `#${id}`).join(', ')};${comment}`,
+              .replace('.', ',')};${issueIds.map((id) => `#${id}`).join(', ')};${comment}`
           )
         })
     })

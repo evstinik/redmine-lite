@@ -6,7 +6,7 @@ import { TimeEntryActivity } from '../models/api/TimeEntryActivity'
 import {
   convertToString,
   isDaysEqual,
-  RelativeDateFormatter,
+  RelativeDateFormatter
 } from '../models/RelativeDateFormatter'
 import { UpdateTimeEntry } from 'models/api/UpdateTimeEntry'
 
@@ -27,7 +27,7 @@ export function useTimeEntries() {
       .getTimeEntries('me', day, apiKey!)
       .then((value) => ({
         value,
-        day,
+        day
       }))
       .then((timeEntries) => {
         if (canceled) {
@@ -36,7 +36,7 @@ export function useTimeEntries() {
         // Save intermediate state (overview)
         setAppState((appState) => ({
           ...appState,
-          timeEntries,
+          timeEntries
         }))
       })
       //   // And start loading details (issues)
@@ -100,12 +100,12 @@ export function useAddTimeEntry() {
           ...appState,
           timeEntries: {
             day: appState.timeEntries?.day ?? appState.dayForTimeEntries ?? new Date(),
-            value: [...(appState.timeEntries?.value ?? []), createdTimeEntry],
-          },
+            value: [...(appState.timeEntries?.value ?? []), createdTimeEntry]
+          }
         }))
       })
     },
-    [apiKey, dayForTimeEntries, redmineService, setAppState],
+    [apiKey, dayForTimeEntries, redmineService, setAppState]
   )
 }
 
@@ -127,12 +127,12 @@ export function useUpdateTimeEntry() {
             value:
               appState.timeEntries?.value.map((te) => {
                 return te.id == id ? { ...te, ...timeEntry } : te
-              }) ?? [],
-          },
+              }) ?? []
+          }
         }))
       })
     },
-    [apiKey, dayForTimeEntries, redmineService, setAppState],
+    [apiKey, dayForTimeEntries, redmineService, setAppState]
   )
 }
 
@@ -146,12 +146,12 @@ export function useDeleteTimeEntry() {
           ...appState,
           timeEntries: appState.timeEntries && {
             ...appState.timeEntries,
-            value: appState.timeEntries.value.filter(({ id }) => timeEntryId !== id),
-          },
+            value: appState.timeEntries.value.filter(({ id }) => timeEntryId !== id)
+          }
         }))
       })
     },
-    [apiKey, redmineService, setAppState],
+    [apiKey, redmineService, setAppState]
   )
 }
 
@@ -163,7 +163,7 @@ export function useTimeEntryActivitiesFetcher() {
       redmineService.getTimeEntryActivities(apiKey!).then((activities) => {
         setAppState((appState) => ({
           ...appState,
-          activities,
+          activities
         }))
       })
     }

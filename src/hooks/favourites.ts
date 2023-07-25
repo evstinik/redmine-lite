@@ -1,6 +1,6 @@
-import { TimeEntry } from "models/api/TimeEntry";
-import { useCallback, useMemo } from "react";
-import { useAppState } from "./appState";
+import { TimeEntry } from 'models/api/TimeEntry'
+import { useCallback, useMemo } from 'react'
+import { useAppState } from './appState'
 
 export function useFavourites() {
   const [appState, setAppState] = useAppState()
@@ -20,8 +20,11 @@ export function useFavourites() {
     })
   }, [])
 
-  return useMemo(() => ({ 
-    favouriteEntries: favs, 
-    toggleFavouriteEntry: toggleFav
-  }), [favs, toggleFav])
+  return useMemo(
+    () => ({
+      favouriteEntries: favs,
+      toggleFavouriteEntry: toggleFav
+    }),
+    [favs, toggleFav]
+  )
 }

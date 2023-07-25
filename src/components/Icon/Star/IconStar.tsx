@@ -16,5 +16,9 @@ export function IconStar(props: IconStarProps) {
     }
   }, [rest.style])
 
-  return filled ? <IconStarFilled {...rest} style={style} /> : <IconStarOutlined {...rest} style={style} />
+  return filled ? (
+    <IconStarFilled {...rest} style={style} />
+  ) : (
+    <IconStarOutlined {...rest} style={style} />
+  )
 }

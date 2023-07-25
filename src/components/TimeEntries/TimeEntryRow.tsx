@@ -43,7 +43,7 @@ export function TimeEntryRow({ timeEntry, issueName }: TimeEntryRowProps) {
   }, [timeEntry, favouriteEntries])
   const isFavourite = React.useMemo(
     () => !!favouriteEntries?.find((e) => e.id === timeEntry.id),
-    [timeEntry, favouriteEntries],
+    [timeEntry, favouriteEntries]
   )
 
   const updateTimeEntry = useUpdateTimeEntry()
@@ -57,7 +57,7 @@ export function TimeEntryRow({ timeEntry, issueName }: TimeEntryRowProps) {
       ...timeEntry,
       issue_id: timeEntry.issue.id,
       activity_id: timeEntry.activity.id,
-      hours: Number(hours),
+      hours: Number(hours)
     })
     setEditingHours(false)
     setHours(`${timeEntry.hours}`)
