@@ -8,6 +8,8 @@ import { useTimeEntryActivitiesFetcher } from './hooks/timeEntries'
 import { useLogout } from './hooks/user'
 import { useApiKey } from './hooks/apiKey'
 import { MainPage } from './pages/MainPage'
+import { ThemeProvider } from '@mui/material/styles'
+import { theme } from 'theme'
 
 function AppWithContexts() {
   const apiKey = useApiKey()
@@ -40,7 +42,9 @@ function App() {
   return (
     <AppStateContext.Provider value={appStateGetSet}>
       <RedmineServiceContext.Provider value={redmineService}>
-        <AppWithContexts />
+        <ThemeProvider theme={theme}>
+          <AppWithContexts />
+        </ThemeProvider>
       </RedmineServiceContext.Provider>
     </AppStateContext.Provider>
   )

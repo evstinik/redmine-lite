@@ -4,6 +4,9 @@ import { IssueRow } from './IssueRow'
 import { useOnChange } from 'hooks/utils'
 import { Issue } from 'models/api/Issue'
 import { useProjects } from 'hooks/projects'
+import { AutocompleteSelect } from 'components/AutocompleteSelect'
+import TextField from '@mui/material/TextField'
+
 import './IssuesSearch.css'
 
 interface IssuesProps {
@@ -14,13 +17,13 @@ export function IssuesSearch(props: IssuesProps) {
   const { onSelect } = props
 
   const [query, setQuery] = React.useState('')
-  const [projectId, setProjectId] = React.useState<number>(0)
+  const [projectId, setProjectId] = React.useState<string>('0')
 
   const [latestQuery, setLatestQuery] = React.useState(query)
-  const [latestProjectId, setLatestProjectId] = React.useState<number>(projectId)
+  const [latestProjectId, setLatestProjectId] = React.useState<string>(projectId)
 
   const projects = useProjects() ?? []
-  const [issues, isLoading] = useIssuesSearch(latestQuery, latestProjectId)
+  const [issues, isLoading] = useIssuesSearch(latestQuery, Number(latestProjectId))
 
   const search = React.useCallback(
     (event) => {
@@ -35,18 +38,27 @@ export function IssuesSearch(props: IssuesProps) {
     <div className='issues-search'>
       <h2>Issues search</h2>
       <form className='search-form' onSubmit={search}>
-        <select value={projectId} onChange={useOnChange(setProjectId)}>
-          <option value={0}>Any project</option>
-          {projects.map((project) => (
-            <option key={project.id} value={project.id}>
-              {project.name}
-            </option>
-          ))}
-        </select>
-        <input
-          type='text'
+        <AutocompleteSelect
+          label={'Project'}
+          sx={{ width: 200 }}
+          slotProps={{
+            paper: {
+              sx: {
+                minWidth: 400
+              }
+            }
+          }}
+          options={[{ id: 0, name: 'Any project' }, ...projects]}
+          getOptionLabel={(option) => option.name}
+          value={projectId}
+          onValueChanged={setProjectId}
+        />
+        <TextField
+          className='search-form__query'
+          label='Search query'
           value={query}
           placeholder='Search query...'
+          variant='standard'
           onChange={useOnChange(setQuery)}
         />
         <input type='submit' value='Search' className='contained' />

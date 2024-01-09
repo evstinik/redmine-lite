@@ -131,19 +131,28 @@ export class RedmineService {
     )
   }
 
-  public async getProjects(
-    offset: number = 0,
-    limit: number = 10,
-    apiKey: string
-  ): Promise<ProjectPaginatedList> {
+  public async getProjects(apiKey: string): Promise<ProjectPaginatedList> {
     let queryParams: { [name: string]: string | number } = {
-      offset,
-      limit
+      offset: 0,
+      limit: 100
     }
-    return await this.request<ProjectPaginatedList>(`/projects`, {
+    const result = await this.request<ProjectPaginatedList>(`/projects`, {
       apiKey,
       queryParams
     })
+
+    while (result.projects.length < result.total_count) {
+      const nextResult = await this.request<ProjectPaginatedList>(`/projects`, {
+        apiKey,
+        queryParams: {
+          offset: result.projects.length,
+          limit: 100
+        }
+      })
+      result.projects.push(...nextResult.projects)
+    }
+
+    return result
   }
 
   public async getTimeEntryActivities(apiKey: string): Promise<TimeEntryActivity[]> {

@@ -116,7 +116,7 @@ input[type='submit']:focus {
   outline: 0;
 }
 
-input[type='text'] {
+input[type='text']:not(.MuiInputBase-input) {
   outline: 0;
   border: 0;
   border-bottom: 1px solid var(--action-fg-color);

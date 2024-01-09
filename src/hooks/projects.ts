@@ -10,7 +10,7 @@ export function useProjects() {
     if (!projects && !isLoading) {
       setIsLoading(true)
       redmineService
-        .getProjects(0, 100, apiKey!)
+        .getProjects(apiKey!)
         .then(({ projects }) => {
           setAppState((appState) => ({
             ...appState,
