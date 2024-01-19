@@ -11,6 +11,8 @@ import { ThemeProvider } from '@mui/material/styles'
 import { theme } from 'theme'
 import { Router } from './Router'
 import { AppRoutes } from 'AppRoutes'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { queryClient } from 'queryClient'
 
 function AppWithContexts() {
   const apiKey = useApiKey()
@@ -44,7 +46,9 @@ function App() {
       <RedmineServiceContext.Provider value={redmineService}>
         <ThemeProvider theme={theme}>
           <Router>
-            <AppWithContexts />
+            <QueryClientProvider client={queryClient}>
+              <AppWithContexts />
+            </QueryClientProvider>
           </Router>
         </ThemeProvider>
       </RedmineServiceContext.Provider>

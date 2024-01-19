@@ -21,6 +21,15 @@
   overflow-y: auto;
 }
 
+.page__content__fixed-panel {
+  min-height: 0;
+  height: calc(100vh - 86px);
+  min-width: 0;
+  width: 100vw;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
 .page .time-entry-form {
   margin-top: 16px;
 }

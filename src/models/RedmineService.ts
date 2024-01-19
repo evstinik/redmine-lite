@@ -10,6 +10,7 @@ import { TimeEntryActivity, TimeEntryActivityResponse } from './api/TimeEntryAct
 import { Issue, IssueDetailResponse, IssuesPaginatedList } from './api/Issue'
 import { ProjectPaginatedList } from './api/Project'
 import { UpdateTimeEntry } from './api/UpdateTimeEntry'
+import { WikiPage, WikiPageResponse } from './api/WikiPage'
 
 const API_URL = process.env.REACT_APP_API_URL ?? ''
 
@@ -166,6 +167,18 @@ export class RedmineService {
   public async getUser(userId: string = 'current', apiKey: string): Promise<User> {
     const { user } = await this.request<UsersResponse>(`/users/${userId}`, { apiKey })
     return user
+  }
+
+  public async getWikiPage(
+    projectId: number | string,
+    pageName: string,
+    apiKey: string
+  ): Promise<WikiPage> {
+    const { wiki_page } = await this.request<WikiPageResponse>(
+      `/projects/${projectId}/wiki/${pageName}`,
+      { apiKey }
+    )
+    return wiki_page
   }
 
   private async request<T>(
