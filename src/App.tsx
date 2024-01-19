@@ -7,9 +7,10 @@ import { RedmineService } from './models/RedmineService'
 import { useTimeEntryActivitiesFetcher } from './hooks/timeEntries'
 import { useLogout } from './hooks/user'
 import { useApiKey } from './hooks/apiKey'
-import { MainPage } from './pages/MainPage'
 import { ThemeProvider } from '@mui/material/styles'
 import { theme } from 'theme'
+import { Router } from './Router'
+import { AppRoutes } from 'AppRoutes'
 
 function AppWithContexts() {
   const apiKey = useApiKey()
@@ -17,12 +18,11 @@ function AppWithContexts() {
   useAppStateAutosaver()
   useTimeEntryActivitiesFetcher()
 
-  return (
-    <>
-      {!apiKey && <Login />}
-      {apiKey && <MainPage />}
-    </>
-  )
+  if (!apiKey) {
+    return <Login />
+  }
+
+  return <AppRoutes />
 }
 
 function App() {
@@ -43,7 +43,9 @@ function App() {
     <AppStateContext.Provider value={appStateGetSet}>
       <RedmineServiceContext.Provider value={redmineService}>
         <ThemeProvider theme={theme}>
-          <AppWithContexts />
+          <Router>
+            <AppWithContexts />
+          </Router>
         </ThemeProvider>
       </RedmineServiceContext.Provider>
     </AppStateContext.Provider>
