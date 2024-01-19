@@ -10,12 +10,15 @@ import { useApiKey } from './hooks/apiKey'
 import { MainPage } from './pages/MainPage'
 import { ThemeProvider } from '@mui/material/styles'
 import { theme } from 'theme'
+import { EditorPage } from 'pages/EditorPage/EditorPage'
 
 function AppWithContexts() {
   const apiKey = useApiKey()
 
   useAppStateAutosaver()
   useTimeEntryActivitiesFetcher()
+
+  return <EditorPage />
 
   return (
     <>
