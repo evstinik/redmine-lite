@@ -1,70 +1,75 @@
-import { FC, SyntheticEvent, useCallback, useMemo } from 'react'
-import Autocomplete, { AutocompleteProps } from '@mui/material/Autocomplete'
-import TextField from '@mui/material/TextField'
+import {
+  Autocomplete,
+  AutocompleteProps,
+  TextField as MUITextField,
+  SxProps,
+  Theme
+} from '@mui/material'
+import { ReactNode, useCallback, useMemo } from 'react'
 
-export interface AutocompleteSelectOptionProps {
-  id: number | string
-  name: string
+export function searchByTerms<T>(query: string, items: T[], searchBy: (item: T) => string): T[] {
+  const requiredTerms = query.toLowerCase().split(' ')
+  return items.filter((item) => {
+    const itemString = searchBy(item).toLowerCase()
+    return requiredTerms.every((term) => itemString.includes(term))
+  })
 }
 
-type MuiAutocompleteSelectProps = AutocompleteProps<
-  AutocompleteSelectOptionProps,
-  false,
-  false,
-  boolean,
-  'div'
->
-
-export type AutocompleteSelectFieldValue = string
-export type AutocompleteSelectOptionValue = Parameters<
-  Exclude<MuiAutocompleteSelectProps['onChange'], undefined>
->[1]
-
-export interface AutocompleteSelectProps
-  extends Omit<MuiAutocompleteSelectProps, 'renderInput' | 'getOptionLabel'> {
+export interface AutocompleteSelectProps<T> {
   name?: string
   label: string
   required?: boolean
-  valueByName?: boolean
-  getOptionLabel: (option: AutocompleteSelectOptionProps) => string
+  getOptionValue: (option: T) => string
+  getOptionLabel: (option: T) => string
+  renderOption?: (option: T) => ReactNode
   value: string
-  onValueChanged?: (newValue: string) => void
+  options: T[]
+  onValueChanged?: (newValue: string | null) => void
+  fullWidth?: boolean
+  className?: string
+  loading?: boolean
+  loadingText?: string
+  testId?: string
+  dropdownTestId?: string
+  sx?: SxProps<Theme>
+  slotProps?: AutocompleteProps<any, any, any, any>['slotProps']
 }
 
-export const AutocompleteSelect: FC<AutocompleteSelectProps> = ({
-  name,
-  options,
-  label,
-  required,
-  getOptionLabel,
-  valueByName,
-  value,
-  onValueChanged,
-  ...props
-}) => {
-  const valueType = useMemo(() => (valueByName ? 'name' : 'id'), [valueByName])
+export function AutocompleteSelect<T>(props: AutocompleteSelectProps<T>) {
+  const {
+    options,
+    getOptionValue,
+    label,
+    required,
+    getOptionLabel,
+    value,
+    onValueChanged,
+    renderOption,
+    testId,
+    dropdownTestId,
+    ...rest
+  } = props
 
   const selectedOption = useMemo(
-    () => options.find((o) => o[valueType] == value) ?? null,
-    [value, options, valueType]
+    () => options.find((o) => getOptionValue(o) === value) ?? null,
+    [value, options, getOptionValue]
   )
 
   const handleChange = useCallback(
-    (_: SyntheticEvent<Element, Event>, value: AutocompleteSelectOptionValue) => {
-      if (typeof value === 'object') {
-        onValueChanged?.(`${value?.[valueType] ?? ''}`)
+    (_: any, value: T | null) => {
+      if (value && typeof value === 'object') {
+        onValueChanged?.(getOptionValue(value))
         return
       }
-
-      onValueChanged?.(value)
+      onValueChanged?.(value as string | null)
     },
-    [onValueChanged, valueType]
+    [onValueChanged, getOptionValue]
   )
 
   return (
     <Autocomplete
-      {...props}
-      autoSelect
+      {...rest}
+      blurOnSelect
       getOptionLabel={(option) => (typeof option === 'string' ? option : getOptionLabel(option))}
       options={options}
       value={selectedOption}
@@ -72,13 +77,29 @@ export const AutocompleteSelect: FC<AutocompleteSelectProps> = ({
       fullWidth={false}
       size='small'
       renderInput={(params) => (
-        <TextField required={required} label={label} variant='standard' {...params} />
+        <MUITextField
+          required={required}
+          label={label}
+          {...params}
+          InputProps={{ ...(params['InputProps'] ?? {}), 'data-testid': testId } as any}
+        />
       )}
       renderOption={(props, option) => (
-        <li {...props} key={option.id}>
-          {getOptionLabel(option)}
+        <li {...props} key={getOptionValue(option)}>
+          {renderOption?.(option) ?? getOptionLabel(option)}
         </li>
       )}
+      filterOptions={(options, state) => {
+        return searchByTerms(state.inputValue, options, getOptionLabel)
+      }}
+      componentsProps={{
+        popper: {
+          'data-testid': dropdownTestId
+        } as any,
+        clearIndicator: {
+          'data-testid': 'clear-indicator'
+        } as any
+      }}
     />
   )
 }

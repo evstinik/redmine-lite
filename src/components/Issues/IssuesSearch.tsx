@@ -38,7 +38,7 @@ export function IssuesSearch(props: IssuesProps) {
     <div className='issues-search'>
       <h2>Issues search</h2>
       <form className='search-form' onSubmit={search}>
-        <AutocompleteSelect
+        <AutocompleteSelect<{ id: number; name: string }>
           label={'Project'}
           sx={{ width: 200 }}
           slotProps={{
@@ -50,8 +50,9 @@ export function IssuesSearch(props: IssuesProps) {
           }}
           options={[{ id: 0, name: 'Any project' }, ...projects]}
           getOptionLabel={(option) => option.name}
+          getOptionValue={(option) => String(option.id)}
           value={projectId}
-          onValueChanged={setProjectId}
+          onValueChanged={(pid) => setProjectId(pid ?? '0')}
         />
         <TextField
           className='search-form__query'
