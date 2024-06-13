@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { Issue } from 'models/api/Issue'
+import { Issue } from '@app/models/api/Issue'
 import './IssueRow.css'
-import { RedmineLink } from 'components/RedmineLink/RedmineLink'
+import { RedmineLink } from '@app/components/RedmineLink/RedmineLink'
 
 interface IssueRowProps {
   onClick?: (issue: Issue) => void

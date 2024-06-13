@@ -2,8 +2,8 @@ import React from 'react'
 import { Route, Routes, Navigate } from 'react-router-dom'
 
 import { TimeTracking } from './pages/TimeTracking'
-import { AppShell } from 'components/AppShell'
-import { Wiki } from 'pages/Wiki'
+import { AppShell } from '@app/components/AppShell'
+import { Wiki } from '@app/pages/Wiki'
 
 export const AppRoutes: React.FC = () => (
   <Routes>

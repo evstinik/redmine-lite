@@ -10,7 +10,7 @@ config({
   path: '.env.local'
 })
 
-const redmineBaseUrl = process.env['REDMINE_URL'] ?? process.env['REACT_APP_REDMINE_URL']
+const redmineBaseUrl = process.env['REDMINE_URL'] ?? process.env['VITE_REDMINE_URL']
 if (!redmineBaseUrl) {
   throw new Error('No Redmine URL configured')
 }

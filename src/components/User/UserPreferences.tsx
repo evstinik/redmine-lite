@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { useAppState } from 'hooks/appState'
-import { useLogout } from 'hooks/user'
-import { useTimeEntryActivities } from 'hooks/timeEntries'
-import { useOnChange } from 'hooks/utils'
+import { useAppState } from '@app/hooks/appState'
+import { useLogout } from '@app/hooks/user'
+import { useTimeEntryActivities } from '@app/hooks/timeEntries'
+import { useOnChange } from '@app/hooks/utils'
 import './UserPreferences.css'
 
 export function UserPreferences(props: React.HTMLAttributes<HTMLDivElement>) {

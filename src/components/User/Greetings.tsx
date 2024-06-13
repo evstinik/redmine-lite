@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useUser } from 'hooks/user'
+import { useUser } from '@app/hooks/user'
 import { UserPreferences } from './UserPreferences'
 import './Greetings.css'
 

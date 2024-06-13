@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface TimeEntryActivity {
   id: number
   name: string
@@ -7,6 +8,7 @@ export interface TimeEntryActivityResponse {
   time_entry_activities: TimeEntryActivity[]
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export abstract class TimeEntryActivity {
   static default = [
     {

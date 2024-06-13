@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { RedmineLink } from 'components/RedmineLink/RedmineLink'
-import { useRedmineService } from 'hooks/redmineService'
-import { useAppState } from 'hooks/appState'
-import { useOnChange } from 'hooks/utils'
+import { RedmineLink } from '@app/components/RedmineLink/RedmineLink'
+import { useRedmineService } from '@app/hooks/redmineService'
+import { useAppState } from '@app/hooks/appState'
+import { useOnChange } from '@app/hooks/utils'
 import './Login.css'
 
 export function Login() {

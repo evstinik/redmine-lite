@@ -12,7 +12,7 @@ import { ProjectPaginatedList } from './api/Project'
 import { UpdateTimeEntry } from './api/UpdateTimeEntry'
 import { WikiPage, WikiPageResponse } from './api/WikiPage'
 
-const API_URL = process.env.REACT_APP_API_URL ?? ''
+const API_URL = import.meta.env.VITE_API_URL ?? ''
 
 interface RequestParams {
   queryParams?: { [name: string]: string | number }
@@ -120,7 +120,7 @@ export class RedmineService {
   }
 
   public async getIssuesByIds(ids: number[], apiKey: string): Promise<Issue[]> {
-    if (ids.length == 0) {
+    if (ids.length === 0) {
       return []
     }
     return await Promise.all(
@@ -133,7 +133,7 @@ export class RedmineService {
   }
 
   public async getProjects(apiKey: string): Promise<ProjectPaginatedList> {
-    let queryParams: { [name: string]: string | number } = {
+    const queryParams: { [name: string]: string | number } = {
       offset: 0,
       limit: 100
     }
@@ -206,7 +206,7 @@ export class RedmineService {
       return `${API_URL}${endpoint}.json?${params}`
     }
     const url = escapeParams ? makeUrlWithEscape() : makeUrlWithoutEscape()
-    let headers: { [name: string]: string } = {
+    const headers: { [name: string]: string } = {
       'X-Redmine-API-Key': apiKey
     }
     if (body && method !== 'GET') {

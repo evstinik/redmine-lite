@@ -2,8 +2,8 @@ import React from 'react'
 import classNames from 'classnames'
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
-import { useRedmineService } from 'hooks/redmineService'
-import { useApiKey } from 'hooks/apiKey'
+import { useRedmineService } from '@app/hooks/redmineService'
+import { useApiKey } from '@app/hooks/apiKey'
 
 import './Wiki.css'
 
@@ -12,13 +12,13 @@ export interface WikiProps extends React.PropsWithChildren {
 }
 
 export const Wiki: React.FC<WikiProps> = (props) => {
-  const { className, children } = props
+  const { className } = props
 
   const { projectId = '', wikiPageId = '' } = useParams<{ projectId: string; wikiPageId: string }>()
 
   const redmineService = useRedmineService()
   const apiKey = useApiKey()
-  const { isLoading, data: wikiPage } = useQuery({
+  const { data: wikiPage } = useQuery({
     queryKey: ['wiki', projectId, wikiPageId],
     queryFn: () => redmineService.getWikiPage(projectId, wikiPageId, apiKey!)
   })

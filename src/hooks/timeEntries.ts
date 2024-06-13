@@ -8,7 +8,7 @@ import {
   isDaysEqual,
   RelativeDateFormatter
 } from '../models/RelativeDateFormatter'
-import { UpdateTimeEntry } from 'models/api/UpdateTimeEntry'
+import { UpdateTimeEntry } from '@app/models/api/UpdateTimeEntry'
 
 export function useTimeEntries() {
   const [{ timeEntries, apiKey, dayForTimeEntries }, setAppState] = useAppState()
@@ -126,7 +126,7 @@ export function useUpdateTimeEntry() {
             day: appState.timeEntries?.day ?? appState.dayForTimeEntries ?? new Date(),
             value:
               appState.timeEntries?.value.map((te) => {
-                return te.id == id ? { ...te, ...timeEntry } : te
+                return te.id === id ? { ...te, ...timeEntry } : te
               }) ?? []
           }
         }))

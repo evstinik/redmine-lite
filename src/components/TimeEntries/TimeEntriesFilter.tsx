@@ -1,6 +1,6 @@
 import * as React from 'react'
 import DatePicker, { registerLocale } from 'react-datepicker'
-import { useAppState } from 'hooks/appState'
+import { useAppState } from '@app/hooks/appState'
 import './TimeEntriesFilter.css'
 import 'react-datepicker/dist/react-datepicker.css'
 

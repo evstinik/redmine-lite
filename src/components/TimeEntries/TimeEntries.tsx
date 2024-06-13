@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { useTimeEntries, useDayForTimeEntries } from 'hooks/timeEntries'
+import { useTimeEntries, useDayForTimeEntries } from '@app/hooks/timeEntries'
 import { TimeEntryRow } from './TimeEntryRow'
-import { TimeEntry } from 'models/api/TimeEntry'
+import { TimeEntry } from '@app/models/api/TimeEntry'
 import { TimeEntriesFilter } from './TimeEntriesFilter'
-import { RelativeDateFormatter } from 'models/RelativeDateFormatter'
+import { RelativeDateFormatter } from '@app/models/RelativeDateFormatter'
 import './TimeEntries.css'
-import { useIssuesDetailsByIds } from 'hooks/issues'
+import { useIssuesDetailsByIds } from '@app/hooks/issues'
 
 function sortByDateAsc(te1: TimeEntry, te2: TimeEntry) {
   return te1.spent_on.localeCompare(te2.spent_on) || te1.created_on.localeCompare(te2.created_on)
@@ -41,7 +41,7 @@ export function TimeEntries() {
   return (
     <div className='time-entries'>
       <h2>
-        Here's your time entries for{' '}
+        Here&apos;s your time entries for{' '}
         <span className='action' onClick={toggleFilter}>
           {formattedDay}
         </span>

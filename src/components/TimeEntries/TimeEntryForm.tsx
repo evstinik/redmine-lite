@@ -1,18 +1,18 @@
 import * as React from 'react'
-import { useOnChange } from 'hooks/utils'
+import { useOnChange } from '@app/hooks/utils'
 import {
   useAddTimeEntry,
   useTimeEntryActivities,
   usePrimaryTimeEntryActivity,
   useDayForTimeEntries,
   useFormattedDayForTimeEntries
-} from 'hooks/timeEntries'
-import { UnprocessableEntityError } from 'models/RedmineService'
-import { convertToString } from 'models/RelativeDateFormatter'
+} from '@app/hooks/timeEntries'
+import { UnprocessableEntityError } from '@app/models/RedmineService'
+import { convertToString } from '@app/models/RelativeDateFormatter'
 import './TimeEntryForm.css'
-import { capitalize } from 'models/String'
+import { capitalize } from '@app/models/String'
 import { FavouriteEntries } from './FavouriteEntries'
-import { TimeEntry } from 'models/api/TimeEntry'
+import { TimeEntry } from '@app/models/api/TimeEntry'
 
 interface TimeEntryFormProps {
   preselectedIssueId?: number

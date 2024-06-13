@@ -25,3 +25,5 @@ yarn-error.log*
 /*.csv
 # Local Netlify folder
 .netlify
+
+dist

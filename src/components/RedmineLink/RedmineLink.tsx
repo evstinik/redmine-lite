@@ -12,7 +12,7 @@ export function RedmineLink({
   fallbackToText = false,
   children
 }: React.PropsWithChildren<RedmineLinkProps>) {
-  const redmineBaseUrl = process.env.REACT_APP_REDMINE_URL
+  const redmineBaseUrl = import.meta.env.VITE_REDMINE_URL
   if (!redmineBaseUrl) {
     if (fallbackToText) {
       return (
@@ -24,7 +24,7 @@ export function RedmineLink({
     return <>children</>
   }
   return (
-    <a target='_blank' className={className} href={`${redmineBaseUrl}${to}`}>
+    <a target='_blank' className={className} rel='noreferrer' href={`${redmineBaseUrl}${to}`}>
       {children}
     </a>
   )

@@ -1,0 +1,6 @@
+cypress.config.ts
+cypress
+src/tests/*Transform.js
+src/tests/*Mock.js
+src/utils/setupTests.ts
+src/utils/testUtils.tsx

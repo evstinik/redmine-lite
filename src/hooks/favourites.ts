@@ -1,4 +1,4 @@
-import { TimeEntry } from 'models/api/TimeEntry'
+import { TimeEntry } from '@app/models/api/TimeEntry'
 import { useCallback, useMemo } from 'react'
 import { useAppState } from './appState'
 
@@ -9,7 +9,7 @@ export function useFavourites() {
   const toggleFav = useCallback((entry: TimeEntry) => {
     setAppState((appState) => {
       const favs = appState.favouries ?? []
-      let newFavs = [...favs]
+      const newFavs = [...favs]
       const idx = newFavs.findIndex((e) => e.id === entry.id)
       if (idx !== -1) {
         newFavs.splice(idx, 1)

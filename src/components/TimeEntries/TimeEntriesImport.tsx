@@ -3,9 +3,9 @@ import {
   useAddTimeEntry,
   usePrimaryTimeEntryActivity,
   useTimeEntryActivities
-} from 'hooks/timeEntries'
-import { useOnChange } from 'hooks/utils'
-import { UnprocessableEntityError } from 'models/RedmineService'
+} from '@app/hooks/timeEntries'
+import { useOnChange } from '@app/hooks/utils'
+import { UnprocessableEntityError } from '@app/models/RedmineService'
 import './TimeEntriesImport.css'
 
 interface ImportedTimeEntry {
@@ -14,6 +14,7 @@ interface ImportedTimeEntry {
   description: string
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 interface ImportSettings {
   /** Zero-based row index of first row containing data */
   startRow: number
@@ -26,6 +27,8 @@ interface ImportSettings {
   /** CSV separator */
   separator: string
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 abstract class ImportSettings {
   /** Default settings for DAMI IS export */
   static default: ImportSettings = {

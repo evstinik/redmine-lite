@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { DetailedTimeEntry } from 'models/api/TimeEntry'
-import { useDeleteTimeEntry, useUpdateTimeEntry } from 'hooks/timeEntries'
-import { RedmineLink } from 'components/RedmineLink/RedmineLink'
-import { IconButton } from 'components/IconButton'
-import { IconBin, IconStar } from 'components'
-import { useFavourites } from 'hooks/favourites'
+import { DetailedTimeEntry } from '@app/models/api/TimeEntry'
+import { useDeleteTimeEntry, useUpdateTimeEntry } from '@app/hooks/timeEntries'
+import { RedmineLink } from '@app/components/RedmineLink/RedmineLink'
+import { IconButton } from '@app/components/IconButton'
+import { IconBin, IconStar } from '@app/components'
+import { useFavourites } from '@app/hooks/favourites'
 import './TimeEntryRow.css'
 
 interface TimeEntryRowProps {

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Issue } from '../../models/api/Issue'
-import { TimeEntries, TimeEntryForm, IssuesSearch } from 'components'
+import { TimeEntries, TimeEntryForm, IssuesSearch } from '@app/components'
 
 export function TimeTracking() {
   const [selectedIssue, setSelectedIssue] = React.useState<Issue | null>(null)

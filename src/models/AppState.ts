@@ -3,6 +3,7 @@ import { DetailedTimeEntry, TimeEntry } from './api/TimeEntry'
 import { TimeEntryActivity } from './api/TimeEntryActivity'
 import { Project } from './api/Project'
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface AppState {
   timeEntries?: {
     value: DetailedTimeEntry[]
@@ -17,6 +18,7 @@ export interface AppState {
   favouries?: TimeEntry[]
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export abstract class AppState {
   static empty(): AppState {
     return {}

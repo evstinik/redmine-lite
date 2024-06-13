@@ -1,12 +1,11 @@
-import React from 'react'
 import classNames from 'classnames'
+import { useFavourites } from '@app/hooks/favourites'
+import { IconStar, RedmineLink } from '@app/components'
+import { IconButton } from '@app/components/IconButton'
+import { StopEventPropagation } from '@app/components/StopEventPropagation'
+import { TimeEntry } from '@app/models/api/TimeEntry'
 
 import './FavouriteEntries.css'
-import { useFavourites } from 'hooks/favourites'
-import { IconStar, RedmineLink } from 'components'
-import { IconButton } from 'components/IconButton'
-import { StopEventPropagation } from 'components/StopEventPropagation'
-import { TimeEntry } from 'models/api/TimeEntry'
 
 export interface FavouriteEntriesProps {
   className?: string
