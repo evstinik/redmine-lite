@@ -12,7 +12,10 @@
   publish = "build/"
 
   # Default build command.
-  command = "sed -i \"s|REDMINE_URL_PLACEHOLDER|${REDMINE_URL}|g\" netlify.toml && CI=false yarn build"
+  command = "CI=false yarn build"
+
+[[plugins]]
+  package = "./plugins/replace-redirect-env"
 
 [[redirects]]
   from = "/api/*"
