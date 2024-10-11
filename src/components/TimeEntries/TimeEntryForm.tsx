@@ -19,6 +19,13 @@ interface TimeEntryFormProps {
   onResetSelectedIssue: () => void
 }
 
+const validateTime = (value: string | number) => {
+  if (typeof value === 'number') {
+    return true
+  }
+  return /^\d+h\d+m$/.test(value)
+}
+
 export function TimeEntryForm(props: TimeEntryFormProps) {
   const { preselectedIssueId, onResetSelectedIssue } = props
 
@@ -63,6 +70,12 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
   const submit = React.useCallback(
     (event) => {
       event.preventDefault()
+      setErrors([])
+      const isValid = validateTime(spent)
+      if (!isValid) {
+        setErrors(['Please entry time entry in format 1h3m'])
+        return
+      }
       setIsCreating(true)
       addTimeEntry({
         activity_id: Number(activity),
