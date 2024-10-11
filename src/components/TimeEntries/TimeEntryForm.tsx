@@ -73,7 +73,7 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
       setErrors([])
       const isValid = validateTime(spent)
       if (!isValid) {
-        setErrors(['Please entry time entry in format 1h3m'])
+        setErrors(['Please enter time entry in format 1h3m'])
         return
       }
       setIsCreating(true)
