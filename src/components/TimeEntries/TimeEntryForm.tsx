@@ -55,7 +55,7 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
     setComment('')
     setErrors([])
     onResetSelectedIssue()
-  }, [setIssue, setSpent, setComment, primaryActivityId])
+  }, [primaryActivityId, onResetSelectedIssue])
 
   const submit = React.useCallback(
     (event) => {
@@ -105,7 +105,6 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
                 onChange={useOnChange(setSpent)}
                 required
               />
-              h
             </label>
             <label>
               {' '}
