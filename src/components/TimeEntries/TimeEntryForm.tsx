@@ -19,8 +19,9 @@ interface TimeEntryFormProps {
   onResetSelectedIssue: () => void
 }
 
-const validateTime = (value: string | number) => {
-  if (typeof value === 'number') {
+const validateTime = (value: string) => {
+  const parsedValue = Number.isNaN(Number(value))
+  if (!parsedValue) {
     return true
   }
   return /^\d+h\d+m$/.test(value)
