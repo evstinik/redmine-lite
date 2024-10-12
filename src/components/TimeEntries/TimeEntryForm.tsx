@@ -20,10 +20,13 @@ interface TimeEntryFormProps {
 }
 
 const validateTime = (value: string) => {
-  const parsedValue = Number.isNaN(Number(value))
-  if (!parsedValue) {
+  const isNaN = Number.isNaN(Number(value))
+  // any number format is valid
+  if (!isNaN) {
     return true
   }
+  // https://www.redmine.org/projects/redmine/wiki/RedmineTimeTracking
+  // supported format 1h3m for example
   return /^\d+h\d+m$/.test(value)
 }
 
