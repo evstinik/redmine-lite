@@ -19,6 +19,17 @@ interface TimeEntryFormProps {
   onResetSelectedIssue: () => void
 }
 
+const validateTime = (value: string) => {
+  const isNaN = Number.isNaN(Number(value))
+  // any number format is valid
+  if (!isNaN) {
+    return true
+  }
+  // https://www.redmine.org/projects/redmine/wiki/RedmineTimeTracking
+  // supported format 1h3m for example
+  return /^\d+h\d+m$/.test(value)
+}
+
 export function TimeEntryForm(props: TimeEntryFormProps) {
   const { preselectedIssueId, onResetSelectedIssue } = props
 
@@ -32,10 +43,13 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
   const [comment, setComment] = React.useState('')
   const [errors, setErrors] = React.useState<string[]>([])
 
-  const onChangeIssue = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    onResetSelectedIssue()
-    setIssue(event.target.value)
-  }, [])
+  const onChangeIssue = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onResetSelectedIssue()
+      setIssue(event.target.value)
+    },
+    [onResetSelectedIssue]
+  )
 
   const dayForTimeEntries = useDayForTimeEntries()
   const formattedDay = capitalize(useFormattedDayForTimeEntries())
@@ -55,16 +69,22 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
     setComment('')
     setErrors([])
     onResetSelectedIssue()
-  }, [setIssue, setSpent, setComment, primaryActivityId])
+  }, [primaryActivityId, onResetSelectedIssue])
 
   const submit = React.useCallback(
     (event) => {
       event.preventDefault()
+      setErrors([])
+      const isValid = validateTime(spent)
+      if (!isValid) {
+        setErrors(['Please enter time entry in format 1h3m'])
+        return
+      }
       setIsCreating(true)
       addTimeEntry({
         activity_id: Number(activity),
         comments: comment,
-        hours: Number(spent),
+        hours: spent,
         issue_id: Number(issue),
         spent_on: dayForTimeEntries && convertToString(dayForTimeEntries)
       })
@@ -105,7 +125,6 @@ export function TimeEntryForm(props: TimeEntryFormProps) {
                 onChange={useOnChange(setSpent)}
                 required
               />
-              h
             </label>
             <label>
               {' '}
