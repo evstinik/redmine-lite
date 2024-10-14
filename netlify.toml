@@ -9,7 +9,7 @@
   # the build. This is relative to the base directory if one has been set, or the
   # root directory if a base has not been set. This sample publishes the
   # directory located at the absolute path "root/project/build-output"
-  publish = "build/"
+  publish = "dist/"
 
   # Default build command.
   command = "CI=false yarn build"
@@ -22,3 +22,8 @@
   to = "REDMINE_URL_PLACEHOLDER/:splat"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
