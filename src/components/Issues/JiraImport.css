@@ -1,0 +1,29 @@
+.jira-import {
+  margin-top: 24px;
+  padding: 16px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+.jira-import h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.jira-import__description {
+  margin: 0 0 16px 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.jira-import__form {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.jira-import__submit {
+  min-width: 160px;
+  height: 40px;
+}

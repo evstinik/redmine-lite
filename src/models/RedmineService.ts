@@ -132,6 +132,30 @@ export class RedmineService {
     )
   }
 
+  public async createIssue(
+    issue: {
+      project_id: number
+      subject: string
+      description?: string
+      tracker_id?: number
+      priority_id?: number
+      assigned_to_id?: number
+    },
+    apiKey: string
+  ): Promise<Issue> {
+    console.log('RedmineService.createIssue called with:', JSON.stringify(issue, null, 2))
+    console.log('Project ID type:', typeof issue.project_id, 'Value:', issue.project_id)
+
+    const { issue: createdIssue } = await this.request<IssueDetailResponse>('/issues', {
+      apiKey,
+      method: 'POST',
+      body: {
+        issue
+      }
+    })
+    return createdIssue
+  }
+
   public async getProjects(apiKey: string): Promise<ProjectPaginatedList> {
     const queryParams: { [name: string]: string | number } = {
       offset: 0,
@@ -212,6 +236,17 @@ export class RedmineService {
     if (body && method !== 'GET') {
       headers['Content-Type'] = 'application/json'
     }
+
+    // Log the request details for debugging
+    if (method === 'POST' || method === 'PUT') {
+      console.log('RedmineService HTTP Request:', {
+        method,
+        url,
+        body: body ? JSON.stringify(body, null, 2) : undefined,
+        headers: { ...headers, 'X-Redmine-API-Key': '***' }
+      })
+    }
+
     return fetch(url, {
       method,
       body: body && JSON.stringify(body),
