@@ -8,9 +8,10 @@ import {
 import { CreateTimeEntry } from './api/CreateTimeEntry'
 import { TimeEntryActivity, TimeEntryActivityResponse } from './api/TimeEntryActivity'
 import { Issue, IssueDetailResponse, IssuesPaginatedList } from './api/Issue'
-import { ProjectPaginatedList } from './api/Project'
+import { ProjectPaginatedList, ProjectDetailResponse, ProjectTracker } from './api/Project'
 import { UpdateTimeEntry } from './api/UpdateTimeEntry'
 import { WikiPage, WikiPageResponse } from './api/WikiPage'
+import { CreateIssue, CreateIssueResponse } from './api/CreateIssue'
 
 const API_URL = import.meta.env.VITE_API_URL ?? ''
 
@@ -179,6 +180,24 @@ export class RedmineService {
       { apiKey }
     )
     return wiki_page
+  }
+
+  public async getProjectTrackers(projectId: number, apiKey: string): Promise<ProjectTracker[]> {
+    const { project } = await this.request<ProjectDetailResponse>(`/projects/${projectId}`, {
+      apiKey,
+      queryParams: { include: 'trackers' }
+    })
+    return project.trackers ?? []
+  }
+
+  public async createIssue(issue: CreateIssue, apiKey: string): Promise<CreateIssueResponse> {
+    return await this.request<CreateIssueResponse>('/issues', {
+      apiKey,
+      method: 'POST',
+      body: {
+        issue
+      }
+    })
   }
 
   private async request<T>(

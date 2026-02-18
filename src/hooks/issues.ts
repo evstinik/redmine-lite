@@ -3,7 +3,11 @@ import { Issue } from '../models/api/Issue'
 import { useRedmineService } from './redmineService'
 import { useApiKey } from './apiKey'
 
-export function useIssuesSearch(query: string, projectId: number): [Issue[], boolean] {
+export function useIssuesSearch(
+  query: string,
+  projectId: number,
+  refreshToken?: number
+): [Issue[], boolean] {
   const [issues, setIssues] = useState<Issue[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const apiKey = useApiKey()
@@ -29,7 +33,7 @@ export function useIssuesSearch(query: string, projectId: number): [Issue[], boo
       console.log('Cancelled', query, projectId, _params)
       isCancelled = true
     }
-  }, [apiKey, projectId, query, redmineService])
+  }, [apiKey, projectId, query, redmineService, refreshToken])
 
   return [issues, isLoading]
 }

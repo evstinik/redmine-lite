@@ -31,6 +31,11 @@ export default ({ mode }) => {
           target: env.VITE_REDMINE_URL,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, '')
+        },
+        '/jira-api': {
+          target: env.VITE_JIRA_URL || 'https://devstack.vwgroup.com/jira',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/jira-api/, '')
         }
       }
     },

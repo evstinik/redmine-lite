@@ -24,6 +24,12 @@
   force = true
 
 [[redirects]]
+  from = "/jira-api/*"
+  to = "JIRA_URL_PLACEHOLDER/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200

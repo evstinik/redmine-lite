@@ -15,6 +15,7 @@ export interface AppState {
   user?: User
   activities?: TimeEntryActivity[]
   primaryActivityId?: number
+  favouriteProjectId?: number
   favouries?: TimeEntry[]
 }
 
@@ -33,10 +34,10 @@ export abstract class AppState {
     }
   }
 
-  static store({ apiKey, primaryActivityId, activities, favouries }: AppState) {
+  static store({ apiKey, primaryActivityId, favouriteProjectId, activities, favouries }: AppState) {
     localStorage.setItem(
       'RedmineLite',
-      JSON.stringify({ apiKey, primaryActivityId, activities, favouries })
+      JSON.stringify({ apiKey, primaryActivityId, favouriteProjectId, activities, favouries })
     )
   }
 }
