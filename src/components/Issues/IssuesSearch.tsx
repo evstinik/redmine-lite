@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { useIssuesSearch } from '@app/hooks/issues'
 import { IssueRow } from './IssueRow'
+import { JiraImport } from './JiraImport'
 import { useOnChange } from '@app/hooks/utils'
 import { Issue } from '@app/models/api/Issue'
 import { useProjects } from '@app/hooks/projects'
@@ -74,8 +75,17 @@ export function IssuesSearch(props: IssuesProps) {
       {issues.length === 0 && (
         <>
           {isLoading && <p className='list-placeholder'>Loading...</p>}
-          {!isLoading && (
-            <p className='list-placeholder'>Nothing found for your query, try something else</p>
+          {!isLoading && latestQuery && (
+            <div className='list-placeholder'>
+              <p>Nothing found for your query, try something else</p>
+              <JiraImport
+                onIssueCreated={onSelect}
+                projectId={Number(latestProjectId)}
+              />
+            </div>
+          )}
+          {!isLoading && !latestQuery && (
+            <p className='list-placeholder'>Enter a search query to find issues</p>
           )}
         </>
       )}

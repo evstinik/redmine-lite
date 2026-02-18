@@ -12,3 +12,12 @@
 .issues-search ul {
   margin: 24px 0;
 }
+
+.issues-search .list-placeholder {
+  margin: 24px 0;
+}
+
+.issues-search .list-placeholder p {
+  margin: 0 0 16px 0;
+}
+
