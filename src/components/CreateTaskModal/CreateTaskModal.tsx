@@ -6,7 +6,9 @@ import { useAppState } from '@app/hooks/appState'
 import { useJiraService, useJiraApiKey } from '@app/hooks/jira'
 import { AutocompleteSelect } from '@app/components/AutocompleteSelect'
 import { UnprocessableEntityError } from '@app/models/RedmineService'
+import { JiraUnauthorizedError } from '@app/models/JiraService'
 import { ProjectTracker } from '@app/models/api/Project'
+import { focusFirstFocusable, trapFocus } from '@app/utils/focus'
 import './CreateTaskModal.css'
 
 const JIRA_URL = import.meta.env.VITE_JIRA_URL || 'https://devstack.vwgroup.com/jira'
@@ -52,23 +54,14 @@ export function CreateTaskModal(props: CreateTaskModalProps) {
   const jiraService = useJiraService()
   const apiKey = useApiKey()
   const [{ favouriteProjectId }] = useAppState()
-  const [jiraApiKey, setJiraApiKey] = useJiraApiKey()
+  const [jiraApiKey, setJiraApiKey, clearJiraApiKey] = useJiraApiKey()
 
   React.useEffect(() => {
     if (isOpen) {
       previouslyFocusedElementRef.current = document.activeElement as HTMLElement | null
       const modalNode = modalRef.current
       if (modalNode) {
-        const focusableSelectors =
-          'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
-        const focusableElements = Array.from(
-          modalNode.querySelectorAll<HTMLElement>(focusableSelectors)
-        ).filter((el) => !el.hasAttribute('disabled') && !el.getAttribute('aria-hidden'))
-        if (focusableElements.length > 0) {
-          focusableElements[0].focus()
-        } else {
-          modalNode.focus()
-        }
+        focusFirstFocusable(modalNode)
       }
     } else if (!isOpen && previouslyFocusedElementRef.current) {
       previouslyFocusedElementRef.current.focus()
@@ -180,11 +173,18 @@ export function CreateTaskModal(props: CreateTaskModalProps) {
           })
         })
         .catch((err) => {
-          setErrors([err.message ?? 'Failed to import from Jira'])
+          if (err instanceof JiraUnauthorizedError) {
+            alert(err.message)
+            clearJiraApiKey()
+            setJiraKeyInput('')
+            setShowJiraKeyPrompt(true)
+          } else {
+            setErrors([err.message ?? 'Failed to import from Jira'])
+          }
         })
         .then(() => setIsImporting(false))
     },
-    [jiraService, trackers]
+    [jiraService, trackers, clearJiraApiKey]
   )
 
   const handleImportFromJira = React.useCallback(() => {
@@ -230,29 +230,7 @@ export function CreateTaskModal(props: CreateTaskModalProps) {
         const modalNode = modalRef.current
         if (!modalNode) return
 
-        const focusableSelectors =
-          'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
-        const focusableElements = Array.from(
-          modalNode.querySelectorAll<HTMLElement>(focusableSelectors)
-        ).filter((el) => !el.hasAttribute('disabled') && !el.getAttribute('aria-hidden'))
-
-        if (focusableElements.length === 0) return
-
-        const firstElement = focusableElements[0]
-        const lastElement = focusableElements[focusableElements.length - 1]
-        const currentElement = document.activeElement as HTMLElement | null
-
-        if (event.shiftKey) {
-          if (currentElement === firstElement || !modalNode.contains(currentElement)) {
-            event.preventDefault()
-            lastElement.focus()
-          }
-        } else {
-          if (currentElement === lastElement || !modalNode.contains(currentElement)) {
-            event.preventDefault()
-            firstElement.focus()
-          }
-        }
+        trapFocus(modalNode, event)
       }
     },
     [onClose]

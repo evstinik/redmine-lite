@@ -9,7 +9,7 @@ export function useJiraService() {
 
 const JIRA_API_KEY_STORAGE_KEY = 'RedmineLite_JiraApiKey'
 
-export function useJiraApiKey(): [string | null, (key: string) => void] {
+export function useJiraApiKey(): [string | null, (key: string) => void, () => void] {
   const [jiraApiKey, setJiraApiKeyState] = useState<string | null>(
     () => localStorage.getItem(JIRA_API_KEY_STORAGE_KEY)
   )
@@ -19,5 +19,10 @@ export function useJiraApiKey(): [string | null, (key: string) => void] {
     setJiraApiKeyState(key)
   }
 
-  return [jiraApiKey, setJiraApiKey]
+  function clearJiraApiKey() {
+    localStorage.removeItem(JIRA_API_KEY_STORAGE_KEY)
+    setJiraApiKeyState(null)
+  }
+
+  return [jiraApiKey, setJiraApiKey, clearJiraApiKey]
 }

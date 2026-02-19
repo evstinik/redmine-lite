@@ -18,9 +18,13 @@ interface JiraIssueResponse {
   fields: JiraIssueFields
 }
 
-export class JiraService {
-  public onUnauthorized?: () => void
+export class JiraUnauthorizedError extends Error {
+  constructor() {
+    super('Jira authentication failed. Please check your API key.')
+  }
+}
 
+export class JiraService {
   public async getIssue(issueKey: string, jiraApiKey: string): Promise<JiraIssue> {
     const url = `${JIRA_API_URL}/rest/api/2/issue/${encodeURIComponent(issueKey)}?fields=summary,description,issuetype`
 
@@ -34,8 +38,7 @@ export class JiraService {
 
     if (!response.ok) {
       if (response.status === 401 || response.status === 403) {
-        this.onUnauthorized?.()
-        throw new Error('Jira authentication failed. Please check your API key.')
+        throw new JiraUnauthorizedError()
       }
       if (response.status === 404) {
         throw new Error(`Jira issue "${issueKey}" not found.`)
