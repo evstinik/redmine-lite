@@ -7,7 +7,7 @@ import {
 } from './api/TimeEntry'
 import { CreateTimeEntry } from './api/CreateTimeEntry'
 import { TimeEntryActivity, TimeEntryActivityResponse } from './api/TimeEntryActivity'
-import { Issue, IssueDetailResponse, IssuesPaginatedList } from './api/Issue'
+import { Issue, IssueDetailResponse, IssuesPaginatedList, Tracker } from './api/Issue'
 import { ProjectPaginatedList } from './api/Project'
 import { UpdateTimeEntry } from './api/UpdateTimeEntry'
 import { WikiPage, WikiPageResponse } from './api/WikiPage'
@@ -179,6 +179,33 @@ export class RedmineService {
       { apiKey }
     )
     return wiki_page
+  }
+
+  public async getTrackers(apiKey: string): Promise<Tracker[]> {
+    const { trackers } = await this.request<{ trackers: Tracker[] }>('/trackers', { apiKey })
+    return trackers
+  }
+
+  public async createIssue(
+    projectId: number,
+    subject: string,
+    trackerId: number,
+    description: string,
+    apiKey: string
+  ): Promise<Issue> {
+    const { issue } = await this.request<IssueDetailResponse>('/issues', {
+      apiKey,
+      method: 'POST',
+      body: {
+        issue: {
+          project_id: projectId,
+          subject,
+          tracker_id: trackerId,
+          description
+        }
+      }
+    })
+    return issue
   }
 
   private async request<T>(
