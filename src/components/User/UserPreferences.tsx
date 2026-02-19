@@ -24,7 +24,7 @@ export function UserPreferences(props: React.HTMLAttributes<HTMLDivElement>) {
     (favouriteProjectId: number) => {
       setAppState((appState) => ({
         ...appState,
-        favouriteProjectId: favouriteProjectId || undefined
+        favouriteProjectId: favouriteProjectId === 0 ? undefined : favouriteProjectId
       }))
     },
     [setAppState]

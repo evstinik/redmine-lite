@@ -33,7 +33,7 @@ export default ({ mode }) => {
           rewrite: (path) => path.replace(/^\/api/, '')
         },
         '/jira-api': {
-          target: env.VITE_JIRA_URL || 'https://devstack.vwgroup.com/jira',
+          target: env.VITE_JIRA_URL,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/jira-api/, '')
         }
