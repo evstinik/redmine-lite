@@ -6,14 +6,17 @@ import { useAppState } from '@app/hooks/appState'
 import { useJiraService, useJiraApiKey } from '@app/hooks/jira'
 import { AutocompleteSelect } from '@app/components/AutocompleteSelect'
 import { UnprocessableEntityError } from '@app/models/RedmineService'
+import { JiraUnauthorizedError } from '@app/models/JiraService'
 import { ProjectTracker } from '@app/models/api/Project'
+import { focusFirstFocusable, trapFocus } from '@app/utils/focus'
+import './CreateTaskModal.css'
 
 const JIRA_URL = import.meta.env.VITE_JIRA_URL || 'https://devstack.vwgroup.com/jira'
 
-import './CreateTaskModal.css'
-
-const TRACKER_USER_STORY_ID = 14
-const TRACKER_BUG_ID = 1
+const ENV_TRACKER_USER_STORY_ID = parseInt(import.meta.env.VITE_TRACKER_USER_STORY_ID || '', 10)
+const ENV_TRACKER_BUG_ID = parseInt(import.meta.env.VITE_TRACKER_BUG_ID || '', 10)
+const TRACKER_USER_STORY_ID = isNaN(ENV_TRACKER_USER_STORY_ID) ? 14 : ENV_TRACKER_USER_STORY_ID
+const TRACKER_BUG_ID = isNaN(ENV_TRACKER_BUG_ID) ? 1 : ENV_TRACKER_BUG_ID
 
 interface CreateTaskModalProps {
   isOpen: boolean
@@ -43,12 +46,28 @@ export function CreateTaskModal(props: CreateTaskModalProps) {
   const [showJiraKeyPrompt, setShowJiraKeyPrompt] = React.useState(false)
   const [jiraKeyInput, setJiraKeyInput] = React.useState('')
 
+  const modalRef = React.useRef<HTMLDivElement | null>(null)
+  const previouslyFocusedElementRef = React.useRef<HTMLElement | null>(null)
+
   const projects = useProjects() ?? []
   const redmineService = useRedmineService()
   const jiraService = useJiraService()
   const apiKey = useApiKey()
   const [{ favouriteProjectId }] = useAppState()
-  const [jiraApiKey, setJiraApiKey] = useJiraApiKey()
+  const [jiraApiKey, setJiraApiKey, clearJiraApiKey] = useJiraApiKey()
+
+  React.useEffect(() => {
+    if (isOpen) {
+      previouslyFocusedElementRef.current = document.activeElement as HTMLElement | null
+      const modalNode = modalRef.current
+      if (modalNode) {
+        focusFirstFocusable(modalNode)
+      }
+    } else if (!isOpen && previouslyFocusedElementRef.current) {
+      previouslyFocusedElementRef.current.focus()
+      previouslyFocusedElementRef.current = null
+    }
+  }, [isOpen])
 
   React.useEffect(() => {
     if (isOpen) {
@@ -58,23 +77,40 @@ export function CreateTaskModal(props: CreateTaskModalProps) {
       setTrackerId(TRACKER_USER_STORY_ID)
       setErrors([])
       setShowJiraKeyPrompt(false)
+      setJiraKeyInput('')
     }
   }, [isOpen, initialSubject, initialProjectId, favouriteProjectId])
 
   React.useEffect(() => {
+    let isCancelled = false
+
     if (!isOpen || !projectId || !apiKey) {
       if (!projectId) setTrackers([])
-      return
+      return () => {
+        isCancelled = true
+      }
     }
+
     setIsLoadingTrackers(true)
     redmineService
       .getProjectTrackers(Number(projectId), apiKey)
       .then((fetchedTrackers) => {
+        if (isCancelled) return
         setTrackers(fetchedTrackers)
         setTrackerId((prev) => pickTrackerId(fetchedTrackers, prev))
       })
-      .catch(() => setTrackers([]))
-      .then(() => setIsLoadingTrackers(false))
+      .catch(() => {
+        if (isCancelled) return
+        setTrackers([])
+      })
+      .then(() => {
+        if (isCancelled) return
+        setIsLoadingTrackers(false)
+      })
+
+    return () => {
+      isCancelled = true
+    }
   }, [isOpen, projectId, apiKey, redmineService])
 
   const handleSubmit = React.useCallback(
@@ -111,64 +147,16 @@ export function CreateTaskModal(props: CreateTaskModalProps) {
         })
         .then(() => setIsSubmitting(false))
     },
-    [projectId, subject, description, trackerId, redmineService, apiKey, onClose]
+    [projectId, subject, description, trackerId, redmineService, apiKey, onClose, onCreated]
   )
 
-  const handleImportFromJira = React.useCallback(() => {
-    const currentKey = jiraApiKey ?? localStorage.getItem('RedmineLite_JiraApiKey')
-    if (!currentKey) {
-      setShowJiraKeyPrompt(true)
-      return
-    }
-
-    const issueKey = subject.trim()
-    if (!issueKey) {
-      setErrors(['Enter a Jira issue key (e.g., AP-12345) in the subject field first.'])
-      return
-    }
-
-    setIsImporting(true)
-    setErrors([])
-
-    jiraService
-      .getIssue(issueKey, currentKey)
-      .then((jiraIssue) => {
-        setSubject(`${jiraIssue.key}: ${jiraIssue.fields.summary}`)
-        const jiraLink = `${JIRA_URL}/browse/${jiraIssue.key}`
-        const desc = jiraIssue.fields.description ?? ''
-        setDescription(desc + (desc ? '\n\n' : '') + jiraLink + '\n')
-
-        const issueTypeName = jiraIssue.fields.issuetype.name.toLowerCase()
-        const preferredId = issueTypeName === 'bug' ? TRACKER_BUG_ID : TRACKER_USER_STORY_ID
-        setTrackerId((prev) => {
-          return pickTrackerId(
-            trackers.length > 0 ? trackers : [{ id: prev, name: '' }],
-            preferredId
-          )
-        })
-      })
-      .catch((err) => {
-        setErrors([err.message ?? 'Failed to import from Jira'])
-      })
-      .then(() => setIsImporting(false))
-  }, [jiraApiKey, jiraService, subject, trackers])
-
-  const handleSaveJiraKey = React.useCallback(() => {
-    if (jiraKeyInput.trim()) {
-      setJiraApiKey(jiraKeyInput.trim())
-      setShowJiraKeyPrompt(false)
-      // Re-trigger import after saving key
-      const issueKey = subject.trim()
-      if (!issueKey) {
-        setErrors(['Enter a Jira issue key (e.g., AP-12345) in the subject field first.'])
-        return
-      }
-
+  const performJiraImport = React.useCallback(
+    (apiKeyToUse: string, issueKey: string) => {
       setIsImporting(true)
       setErrors([])
 
       jiraService
-        .getIssue(issueKey, jiraKeyInput.trim())
+        .getIssue(issueKey, apiKeyToUse)
         .then((jiraIssue) => {
           setSubject(`${jiraIssue.key}: ${jiraIssue.fields.summary}`)
           const jiraLink = `${JIRA_URL}/browse/${jiraIssue.key}`
@@ -185,11 +173,68 @@ export function CreateTaskModal(props: CreateTaskModalProps) {
           })
         })
         .catch((err) => {
-          setErrors([err.message ?? 'Failed to import from Jira'])
+          if (err instanceof JiraUnauthorizedError) {
+            alert(err.message)
+            clearJiraApiKey()
+            setJiraKeyInput('')
+            setShowJiraKeyPrompt(true)
+          } else {
+            setErrors([err.message ?? 'Failed to import from Jira'])
+          }
         })
         .then(() => setIsImporting(false))
+    },
+    [jiraService, trackers, clearJiraApiKey]
+  )
+
+  const handleImportFromJira = React.useCallback(() => {
+    const currentKey = jiraApiKey ?? localStorage.getItem('RedmineLite_JiraApiKey')
+    if (!currentKey) {
+      setShowJiraKeyPrompt(true)
+      return
     }
-  }, [jiraKeyInput, jiraService, setJiraApiKey, subject, trackers])
+
+    const issueKey = subject.trim()
+    if (!issueKey) {
+      setErrors(['Enter a Jira issue key (e.g., AP-12345) in the subject field first.'])
+      return
+    }
+
+    performJiraImport(currentKey, issueKey)
+  }, [jiraApiKey, subject, performJiraImport])
+
+  const handleSaveJiraKey = React.useCallback(() => {
+    if (jiraKeyInput.trim()) {
+      setJiraApiKey(jiraKeyInput.trim())
+      setShowJiraKeyPrompt(false)
+      // Re-trigger import after saving key
+      const issueKey = subject.trim()
+      if (!issueKey) {
+        setErrors(['Enter a Jira issue key (e.g., AP-12345) in the subject field first.'])
+        return
+      }
+
+      performJiraImport(jiraKeyInput.trim(), issueKey)
+    }
+  }, [jiraKeyInput, setJiraApiKey, subject, performJiraImport])
+
+  const handleKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (event.key === 'Escape') {
+        event.stopPropagation()
+        onClose()
+        return
+      }
+
+      if (event.key === 'Tab') {
+        const modalNode = modalRef.current
+        if (!modalNode) return
+
+        trapFocus(modalNode, event)
+      }
+    },
+    [onClose]
+  )
 
   if (!isOpen) {
     return null
@@ -197,8 +242,17 @@ export function CreateTaskModal(props: CreateTaskModalProps) {
 
   return (
     <div className='create-task-overlay' onClick={onClose}>
-      <div className='create-task-modal' onClick={(e) => e.stopPropagation()}>
-        <h2>Create Task</h2>
+      <div
+        className='create-task-modal'
+        role='dialog'
+        aria-modal='true'
+        aria-labelledby='create-task-modal-title'
+        ref={modalRef}
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={handleKeyDown}
+        tabIndex={-1}
+      >
+        <h2 id='create-task-modal-title'>Create Task</h2>
         <form onSubmit={handleSubmit}>
           <div className='create-task-modal__field'>
             <AutocompleteSelect<{ id: number; name: string }>
@@ -237,7 +291,7 @@ export function CreateTaskModal(props: CreateTaskModalProps) {
               <div className='create-task-modal__jira-key-prompt'>
                 <label>Jira API Token</label>
                 <input
-                  type='text'
+                  type='password'
                   value={jiraKeyInput}
                   onChange={(e) => setJiraKeyInput(e.target.value)}
                   placeholder='Enter your Jira personal access token...'

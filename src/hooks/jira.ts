@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo } from 'react'
+import { createContext, useContext, useState } from 'react'
 import { JiraService } from '../models/JiraService'
 
 export const JiraServiceContext = createContext(new JiraService())
@@ -9,12 +9,20 @@ export function useJiraService() {
 
 const JIRA_API_KEY_STORAGE_KEY = 'RedmineLite_JiraApiKey'
 
-export function useJiraApiKey(): [string | null, (key: string) => void] {
-  const storedKey = useMemo(() => localStorage.getItem(JIRA_API_KEY_STORAGE_KEY), [])
+export function useJiraApiKey(): [string | null, (key: string) => void, () => void] {
+  const [jiraApiKey, setJiraApiKeyState] = useState<string | null>(
+    () => localStorage.getItem(JIRA_API_KEY_STORAGE_KEY)
+  )
 
   function setJiraApiKey(key: string) {
     localStorage.setItem(JIRA_API_KEY_STORAGE_KEY, key)
+    setJiraApiKeyState(key)
   }
 
-  return [storedKey, setJiraApiKey]
+  function clearJiraApiKey() {
+    localStorage.removeItem(JIRA_API_KEY_STORAGE_KEY)
+    setJiraApiKeyState(null)
+  }
+
+  return [jiraApiKey, setJiraApiKey, clearJiraApiKey]
 }
