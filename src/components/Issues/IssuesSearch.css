@@ -1,3 +1,14 @@
+.issues-search__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.issues-search__header h2 {
+  margin-bottom: 0;
+}
+
 .issues-search .search-form {
   display: flex;
   flex-direction: row;

@@ -4,6 +4,8 @@ import { AppStateContext, useAppStateAutosaver } from './hooks/appState'
 import { Login } from './components'
 import { RedmineServiceContext } from './hooks/redmineService'
 import { RedmineService } from './models/RedmineService'
+import { JiraServiceContext } from './hooks/jira'
+import { JiraService } from './models/JiraService'
 import { useTimeEntryActivitiesFetcher } from './hooks/timeEntries'
 import { useLogout } from './hooks/user'
 import { useApiKey } from './hooks/apiKey'
@@ -36,6 +38,7 @@ function App() {
   const logout = useLogout(appStateGetSet[1])
 
   const redmineService = React.useMemo(() => new RedmineService(), [])
+  const jiraService = React.useMemo(() => new JiraService(), [])
 
   React.useEffect(() => {
     redmineService.onUnauthorized = logout
@@ -44,13 +47,15 @@ function App() {
   return (
     <AppStateContext.Provider value={appStateGetSet}>
       <RedmineServiceContext.Provider value={redmineService}>
-        <ThemeProvider theme={theme}>
-          <Router>
-            <QueryClientProvider client={queryClient}>
-              <AppWithContexts />
-            </QueryClientProvider>
-          </Router>
-        </ThemeProvider>
+        <JiraServiceContext.Provider value={jiraService}>
+          <ThemeProvider theme={theme}>
+            <Router>
+              <QueryClientProvider client={queryClient}>
+                <AppWithContexts />
+              </QueryClientProvider>
+            </Router>
+          </ThemeProvider>
+        </JiraServiceContext.Provider>
       </RedmineServiceContext.Provider>
     </AppStateContext.Provider>
   )

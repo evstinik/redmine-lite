@@ -11,10 +11,12 @@ import './IssuesSearch.css'
 
 interface IssuesProps {
   onSelect?: (issue: Issue) => void
+  onCreateTask?: (initialSubject?: string, initialProjectId?: string) => void
+  refreshToken?: number
 }
 
 export function IssuesSearch(props: IssuesProps) {
-  const { onSelect } = props
+  const { onSelect, onCreateTask, refreshToken } = props
 
   const [query, setQuery] = React.useState('')
   const [projectId, setProjectId] = React.useState<string>('0')
@@ -23,7 +25,7 @@ export function IssuesSearch(props: IssuesProps) {
   const [latestProjectId, setLatestProjectId] = React.useState<string>(projectId)
 
   const projects = useProjects() ?? []
-  const [issues, isLoading] = useIssuesSearch(latestQuery, Number(latestProjectId))
+  const [issues, isLoading] = useIssuesSearch(latestQuery, Number(latestProjectId), refreshToken)
 
   const search = React.useCallback(
     (event) => {
@@ -36,7 +38,14 @@ export function IssuesSearch(props: IssuesProps) {
 
   return (
     <div className='issues-search'>
-      <h2>Issues search</h2>
+      <div className='issues-search__header'>
+        <h2>Issues search</h2>
+        {onCreateTask && (
+          <button className='contained' onClick={() => onCreateTask()}>
+            + Create task
+          </button>
+        )}
+      </div>
       <form className='search-form' onSubmit={search}>
         <AutocompleteSelect<{ id: number; name: string }>
           label={'Project'}
@@ -75,7 +84,22 @@ export function IssuesSearch(props: IssuesProps) {
         <>
           {isLoading && <p className='list-placeholder'>Loading...</p>}
           {!isLoading && (
-            <p className='list-placeholder'>Nothing found for your query, try something else</p>
+            <div className='list-placeholder'>
+              <p>Nothing found for your query, try something else</p>
+              {onCreateTask && (
+                <button
+                  className='contained'
+                  onClick={() =>
+                    onCreateTask(
+                      latestQuery || undefined,
+                      latestProjectId !== '0' ? latestProjectId : undefined
+                    )
+                  }
+                >
+                  Create task
+                </button>
+              )}
+            </div>
           )}
         </>
       )}
