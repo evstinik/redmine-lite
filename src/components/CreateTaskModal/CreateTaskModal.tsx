@@ -31,6 +31,21 @@ function pickTrackerId(trackers: ProjectTracker[], preferred: number): number {
   return trackers[0]?.id ?? preferred
 }
 
+function extractJiraKey(input: string): { key: string | null; error: string | null } {
+  const trimmed = input.trim()
+  if (!trimmed) {
+    return { key: null, error: 'Enter a Jira issue key (e.g., PROJ-1234) in the subject field first.' }
+  }
+  const browseMatch = trimmed.match(/\/browse\/([A-Z][A-Z0-9]*-[0-9]+)/i)
+  if (browseMatch) {
+    return { key: browseMatch[1].toUpperCase(), error: null }
+  }
+  if (trimmed.includes('://')) {
+    return { key: null, error: 'Please enter only the Jira ticket number (e.g., PROJ-1234), not the full URL.' }
+  }
+  return { key: trimmed, error: null }
+}
+
 export function CreateTaskModal(props: CreateTaskModalProps) {
   const { isOpen, onClose, onCreated, initialSubject, initialProjectId } = props
 
@@ -194,10 +209,13 @@ export function CreateTaskModal(props: CreateTaskModalProps) {
       return
     }
 
-    const issueKey = subject.trim()
-    if (!issueKey) {
-      setErrors(['Enter a Jira issue key (e.g., AP-12345) in the subject field first.'])
+    const { key: issueKey, error: keyError } = extractJiraKey(subject)
+    if (keyError || !issueKey) {
+      setErrors([keyError ?? 'Enter a Jira issue key (e.g., PROJ-1234) in the subject field first.'])
       return
+    }
+    if (issueKey !== subject.trim()) {
+      setSubject(issueKey)
     }
 
     performJiraImport(currentKey, issueKey)
@@ -208,10 +226,13 @@ export function CreateTaskModal(props: CreateTaskModalProps) {
       setJiraApiKey(jiraKeyInput.trim())
       setShowJiraKeyPrompt(false)
       // Re-trigger import after saving key
-      const issueKey = subject.trim()
-      if (!issueKey) {
-        setErrors(['Enter a Jira issue key (e.g., AP-12345) in the subject field first.'])
+      const { key: issueKey, error: keyError } = extractJiraKey(subject)
+      if (keyError || !issueKey) {
+        setErrors([keyError ?? 'Enter a Jira issue key (e.g., PROJ-1234) in the subject field first.'])
         return
+      }
+      if (issueKey !== subject.trim()) {
+        setSubject(issueKey)
       }
 
       performJiraImport(jiraKeyInput.trim(), issueKey)
@@ -286,6 +307,9 @@ export function CreateTaskModal(props: CreateTaskModalProps) {
               >
                 {isImporting ? 'Importing...' : 'Import from Jira'}
               </button>
+            </div>
+            <div className='tip'>
+              Enter the Jira ticket number (e.g., PROJ-1234) to import from Jira
             </div>
             {showJiraKeyPrompt && (
               <div className='create-task-modal__jira-key-prompt'>
