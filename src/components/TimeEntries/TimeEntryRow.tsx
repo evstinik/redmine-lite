@@ -63,6 +63,22 @@ export function TimeEntryRow({ timeEntry, issueName }: TimeEntryRowProps) {
     setHours(`${timeEntry.hours}`)
   }, [timeEntry, hours])
 
+  const [isEditingComments, setEditingComments] = React.useState(false)
+  const [comments, setComments] = React.useState('')
+  React.useEffect(() => {
+    setComments(timeEntry.comments ?? '')
+  }, [timeEntry.comments])
+  const saveNewComments = React.useCallback(() => {
+    updateTimeEntry(timeEntry.id, {
+      ...timeEntry,
+      issue_id: timeEntry.issue.id,
+      activity_id: timeEntry.activity.id,
+      comments
+    })
+    setEditingComments(false)
+    setComments(timeEntry.comments ?? '')
+  }, [timeEntry, comments])
+
   return (
     <li className='time-entry-row'>
       <div className='line'>
@@ -101,7 +117,20 @@ export function TimeEntryRow({ timeEntry, issueName }: TimeEntryRowProps) {
       <div className='line'>
         <p className='comment'>
           <span className='activity'>{timeEntry.activity.name}: </span>
-          {timeEntry.comments}
+          {isEditingComments ? (
+            <input
+              type='text'
+              className='comment-input'
+              value={comments}
+              onChange={({ target }) => setComments(target.value)}
+              autoFocus
+              onBlur={saveNewComments}
+            />
+          ) : (
+            <span className='comment-text' onClick={() => setEditingComments(true)}>
+              {timeEntry.comments}
+            </span>
+          )}
         </p>
         <div className='actions'>
           <IconButton icon={<IconStar filled={isFavourite} />} onClick={toggleFavourite} />

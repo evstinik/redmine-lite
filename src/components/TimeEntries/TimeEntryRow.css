@@ -51,3 +51,18 @@
 .time-entry-row .hours input {
   width: 30px;
 }
+
+.time-entry-row .comment-text {
+  cursor: text;
+}
+
+.time-entry-row .comment-input {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.75);
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.4);
+  outline: none;
+  padding: 0;
+  width: calc(100% - 1px);
+}
